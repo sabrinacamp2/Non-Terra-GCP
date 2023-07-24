@@ -38,8 +38,7 @@ IMO, a promising solution to the above is to strip away the Terra UI and noteboo
 
 		#example
 		gcloud compute ssh --zone "us-central1-a" "scamp-cpu-16" --project "vanallen-scamp"
-		``` 
-		^0febe6
+		```
 
 3. Format the attached persistent disk <br> ****You only have to do this once to a disk. It will wipe your disk clean if you do it again once you have data stored on it**
 	1. Find the name of the persistent disk you created using the following command: <br>
@@ -92,7 +91,7 @@ In this tutorial, I show how you can use the Terra notebook environments in a GC
 1. Create a firewall rule allowing a specific port number. 
    - This will be relevant to running the jupyter notebook in the browser. Navigate to VPC network -> Firewall -> Create Firewall Rule <br>![[Pasted image 20230719130231.png|200]] <br> Set Targets to "All instances in the network". Set source IPv4 ranges to "0.0.0.0/0". Select TCP Ports and enter "8080". Create the firewall rule.<br> ![[Pasted image 20230719130512.png|300]]
 1. Set persistent disk permissions so that docker can read/write to it. ^f97532
-   - We also need to set the appropriate permissions for our persistent disk prior to running the Terra docker so that when we enter the docker and mount our persistent disk the docker user can read/write to it. The idea is more fully explored in this [stackoverflow post](https://stackoverflow.com/questions/29245216/write-in-shared-volumes-docker). If not already, [SSH into the VM instance](#^0febe6) then run the below command.
+   - We also need to set the appropriate permissions for our persistent disk prior to running the Terra docker so that when we enter the docker and mount our persistent disk the docker user can read/write to it. The idea is more fully explored in this [stackoverflow post](https://stackoverflow.com/questions/29245216/write-in-shared-volumes-docker). 
 		```bash
 		sudo chown -R 1000:100 /mnt/disks/{folder-name}
 		
@@ -291,6 +290,11 @@ Steps to how I created the boot disk image `terra-docker-image-100-boot-20230720
 	1. R/Bioconductor: us.gcr.io/broad-dsp-gcr-public/terra-jupyter-bioconductor:2.1.11
 	2. Python: us.gcr.io/broad-dsp-gcr-public/terra-jupyter-python:1.0.15
 	3. Default: us.gcr.io/broad-dsp-gcr-public/terra-jupyter-gatk:2.2.14
+
+
+Erica has several workspaces. I think she could have one PD per workspace, and mount just mount the workspace PD she is interested in using that time/day/whatever. If she wanted to do things on each PD at once, she could create two VMs, ssh into both, mount each PD, and all should be good. 
+
+
 
 #### Sudo access on docker
 - To be able to use the `sudo` command, you have to enter the docker as the root user. 
