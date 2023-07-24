@@ -112,12 +112,40 @@ In this tutorial, I show how you can use the Terra notebook environments in a GC
 	  docker system prune
 		```
 		I recommend this because the Terra docker images are huge, and if you will be utilizing other ones, the boot disk may quickly run out of space. Consider creating your own book disk image with the Terra docker images you will be using.
-1. Create folder for R packages to be installed in. 
-   If you'll be [copying over your Terra PD](#^4e0fd1), skip this step. 
-   - Once you are inside of the docker, create the `/home/jupyter/packages` folder where R packages will be placed. If you don't create this, R packages will be installed elsewhere and won't be saved to the persistent disk. 
-	   ```bash
-	   mkdir /home/jupyter/packages
+1. Set up gcloud authentication.
+   - With newer versions of gcloud, it's no longer possible to authenticate on a machine that doesn't have a web browser (like the GCP VM). The new Instructions below for authenticating a machine without a web browser is from the [google cloud SDK documentation](https://cloud.google.com/sdk/docs/authorizing#auth-login) You _should_ only have to do this once, because the credentials are stored on the persistent disk and could be used with any VM. _I think?_
+		1. Run the following command in the GCP VM:
+		   ```bash
+		   gcloud auth login --no-browser
+			```
+		2. Copy the long command that begins with `gcloud auth login --remote-bootstrap="`
+		3. Paste and run this command on the command line of a different terminal (e.g. your local terminal) that has gcloud installed
+		4. Copy the long URL output from the alternative terminal and paste it back to the first machine. Press enter. You should now be authenticated. 
+1. Transfer Terra persistent disk data to GCP persistent disk
+	- Before performing these steps, I would recommend doing your best to clean up your Terra PD, deleting what you no longer need. Similar to cleaning before you move apartments, there is no need to bring junk to a new place! 
+
+	1. Make a complete copy of your Terra PD to a google bucket. The google bucket folder (here, `notebook-cache-{date}`) should *not* already exist in your bucket for everything to copy in the right directory structure. This folder will be automatically created by the `gsutil cp` process.  Navigate to the **Terra notebook associated terminal** and run the below command.
+		```bash
+		gsutil -m cp -r -L "terraPD_to_gbucket_{date}.log" /home/jupyter gs://{google-bucket}/notebook-cache-{date}
+	
+		#example
+		e.g. gsutil -m cp -r -L "terraPD_to_gbucket_20230724.log" /home/jupyter gs://fc-3a463b92-98d9-47e3-9d16-4ba001069ee9/notebook-cache-20230724
 		```
+		
+		- This will not copy over conda environments unless you had the conda config set to save in a `/home/jupyter` directory. Consider copying environment folder location to `/home/jupyter` before copying Terra PD to google bucket. 
+		- Check if any files were not successfully transferred by inspecting `filtered_output.csv`
+		  ```bash
+		  grep -v "OK" terraPD_to_gbucket_{date}.log > filtered_output.csv
+		  ```
+	1. Copy google bucket folder contents to GCP PD 
+		1.  [Run Terra docker of choice](#^65f372), if not already in the docker.
+		2. Copy Terra PD contents from google bucket to GCP PD
+			```bash
+			gsutil -m cp -r -L "gbucket_to_gcpPD_{date}.log" gs://{google-bucket}/notebook-cache-{date}/* /home/jupyter/
+	
+			#example
+			gsutil -m cp -r -L "gbucket_to_gcpPD_20230724.log" gs://fc-3a463b92-98d9-47e3-9d16-4ba001069ee9/notebook-cache-20230724/* /home/jupyter/
+			```
 1. [Option one] Jupyter notebook ^07938e
 	1. Create the jupyter notebook configuration and password. 
 	   - Loosely following [this tutorial](https://towardsdatascience.com/running-jupyter-notebook-in-google-cloud-platform-in-15-min-61e16da34d52). 
@@ -177,67 +205,6 @@ In this tutorial, I show how you can use the Terra notebook environments in a GC
 	1. Navigate to jupyter lab in your browser of choice. 
 	   - The address you are going to navigate to will be the following, replacing `external_ip_address` with yours. e.g. http://external_ip_address:8080/
 
-### Set up gcloud authentication
-
-^b1e9f5
-
-With newer versions of gcloud, it's no longer possible to authenticate on a machine that doesn't have a web browser (like the GCP VM). The new Instructions below for authenticating a machine without a web browser is from the [google cloud SDK documentation](https://cloud.google.com/sdk/docs/authorizing#auth-login) You _should_ only have to do this once, because the credentials are stored on the persistent disk and could be used with any VM. _I think?_
-
-1. Once you are in the docker container, run the following command:
-   ```bash
-   gcloud auth login --no-browser
-	```
-2. Copy the long command that begins with `gcloud auth login --remote-bootstrap="`
-3. Paste and run this command on the command line of a different terminal (e.g. your local terminal) that has gcloud installed
-4. Copy the long URL output from the alternative terminal and paste it back to the first machine. Press enter. You should now be authenticated. 
-
-### How to transfer your data from Terra PD to GCP PD
-
-^4e0fd1
-
-Before performing these steps, you will need to have already [set up gcloud authentication](#^b1e9f5). Also, I would recommend doing your best to clean up your Terra PD, deleting what you no longer need. Similar to cleaning before you move apartments, there is no need to bring junk to a new place! 
-
-1. Make a complete copy of your Terra PD to a google bucket. The google bucket folder (here, `notebook-cache-{date}`) should *not* already exist in your bucket for everything to copy in the right directory structure. This folder will be automatically created by the `gsutil cp` process.  Navigate to the Terra notebook associated terminal and run the below command.
-	```bash
-	gsutil -m cp -r -L "terraPD_to_gbucket_{date}.log" /home/jupyter gs://{google-bucket}/notebook-cache-{date}
-
-	#example
-	e.g. gsutil -m cp -r -L "terraPD_to_gbucket_20230724.log" /home/jupyter gs://fc-3a463b92-98d9-47e3-9d16-4ba001069ee9/notebook-cache-20230724
-	```
-	
-	- This will not copy over conda environments unless you had the conda config set to save in a `/home/jupyter` directory. Consider copying environment folder location to `/home/jupyter` before copying Terra PD to google bucket. 
-	- Check if any files were not successfully transferred by inspecting `filtered_output.csv`
-	  ```bash
-	  grep -v "OK" terraPD_to_gbucket_{date}.log > filtered_output.csv
-	  ```
-1. Copy google bucket folder contents to GCP PD 
-	1.  [Run Terra docker of choice](#^65f372)
-	2. Copy Terra PD contents from google bucket to GCP PD
-		```bash
-		gsutil -m cp -r -L "gbucket_to_gcpPD_{date}.log" gs://{google-bucket}/notebook-cache-{date}/* /home/jupyter/
-
-		#example
-		gsutil -m cp -r -L "gbucket_to_gcpPD_20230724.log" gs://fc-3a463b92-98d9-47e3-9d16-4ba001069ee9/notebook-cache-20230724/* /home/jupyter/
-		```
-
-### Conda environment and kernels
-By default, conda environments are placed in `/opt/conda/envs`. As I mentioned earlier, only files in `/home/jupyter` will be saved to the persistent disk, so by default the created conda environments **would be lost** if you created a new VM. 
-
-To keep your conda environments, edit the conda configuration to save the environments to a location that is on the persistent disk. 
-```bash
-conda config --append envs_dirs /home/jupyter/envs
-```
-
-^f1dbb8
-
-We can also use different conda environments within a Jupyter notebook using kernels. S/O Erica Pimenta for providing some insight into this. The main idea is that if you want to use a conda environment with a jupyter notebook, you need to have `ipykernel` installed in the environment. If you want the R kernel, you would need to have `r-irkernel` installed in the environment. For example, the below command would create an environment and associated python kernel for the `scanpy_env`. You could then use the `scanpy_env` python kernel and associated packages in a jupyter notebook.
-```bash
-conda create --name scanpy_env scanpy ipykernel
-```
-
-
-
-
 ### I stopped my VM and now resumed it. What all do I have to do to get jupyter up and running again?
 1. [SSH into VM from local terminal](#^3ed8b3)
 2. [Mount persistent disk to VM](#^8fc414)
@@ -255,6 +222,21 @@ conda create --name scanpy_env scanpy ipykernel
 	1. e.g. `jupyter notebook --no-browser --port=8080` or `jupyter-lab --no-browser --port=8080`
 
 ### Supplementary information
+#### Conda environment and kernels
+By default, conda environments are placed in `/opt/conda/envs`. As I mentioned earlier, only files in `/home/jupyter` will be saved to the persistent disk, so by default the created conda environments **would be lost** if you created a new VM. 
+
+To keep your conda environments, edit the conda configuration to save the environments to a location that is on the persistent disk. 
+```bash
+conda config --append envs_dirs /home/jupyter/envs
+```
+
+^f1dbb8
+
+We can also use different conda environments within a Jupyter notebook using kernels. S/O Erica Pimenta for providing some insight into this. The main idea is that if you want to use a conda environment with a jupyter notebook, you need to have `ipykernel` installed in the environment. If you want the R kernel, you would need to have `r-irkernel` installed in the environment. For example, the below command would create an environment and associated python kernel for the `scanpy_env`. You could then use the `scanpy_env` python kernel and associated packages in a jupyter notebook.
+```bash
+conda create --name scanpy_env scanpy ipykernel
+```
+
 #### [Persistent disk snapshot schedule](https://cloud.google.com/compute/docs/disks/scheduled-snapshots#:~:text=In%20the%20Name%20column%2C%20click,schedule%2C%20choose%20Create%20a%20schedule.)
 
 ^38dea0
