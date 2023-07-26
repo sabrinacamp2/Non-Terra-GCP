@@ -72,7 +72,7 @@ IMO, a promising solution to the above is to strip away the Terra UI and noteboo
 		sudo mkdir /mnt/disks
 		sudo mkdir /mnt/disks/scamp-singlecell
 		```
-	1. Mount disk to folder location <a name=mount </a>
+	1. Mount disk to folder location <a name="mount" </a>
 		```bash
 		sudo mount -o discard,defaults /dev/disk/by-id/{persistent-disk-name} /mnt/disks/{folder-name}
 		```
@@ -81,7 +81,7 @@ IMO, a promising solution to the above is to strip away the Terra UI and noteboo
 		#example
 		sudo mount -o discard,defaults /dev/disk/by-id/scsi-0Google_PersistentDisk_scamp-singlecell /mnt/disks/scamp-singlecell
 		```
-	1. Set read and write permissions for the disk <a name="docker-read" </a>
+	1. Set read and write permissions for the disk
 		```bash
 		sudo chmod a+w /mnt/disks/{folder-name}
 		```
@@ -104,7 +104,7 @@ In this tutorial, I show how you can use the Terra notebook environments in a GC
 1. Create a firewall rule allowing a specific port number. 
    - This will be relevant to running the jupyter notebook in the browser. Navigate to VPC network -> Firewall -> Create Firewall Rule <br><img src="Attachments/vpc.png" alt="vpc" width = 70%)><br> Set Targets to "All instances in the network". Set source IPv4 ranges to "0.0.0.0/0". Select TCP Ports and enter "8080". Create the firewall rule.<br><img src="Attachments/firewallrule.png" alt="firewallrule" width = 70%)>
 1. Set persistent disk permissions so that docker can read/write to it.
-   - We also need to set the appropriate permissions for our persistent disk prior to running the Terra docker so that when we enter the docker and mount our persistent disk the docker user can read/write to it. The idea is more fully explored in this [stackoverflow post](https://stackoverflow.com/questions/29245216/write-in-shared-volumes-docker). 
+   - We also need to set the appropriate permissions for our persistent disk prior to running the Terra docker so that when we enter the docker and mount our persistent disk the docker user can read/write to it. The idea is more fully explored in this [stackoverflow post](https://stackoverflow.com/questions/29245216/write-in-shared-volumes-docker). <a name="docker-read"> </a>
 		```bash
 		sudo chown -R 1000:100 /mnt/disks/{folder-name}
 		```
@@ -242,7 +242,7 @@ In this tutorial, I show how you can use the Terra notebook environments in a GC
 6. [Run Terra docker of choice](#terra-docker)
 7. Run jupyter notebook or jupyter lab
 	1. e.g. `jupyter notebook --no-browser --port=8080` or `jupyter-lab --no-browser --port=8080`
-
+<div style="page-break-after: always;"></div>
 ## Supplementary information
 ### Conda environment and kernels
 By default, conda environments are placed in `/opt/conda/envs`. As I mentioned earlier, only files in `/home/jupyter` will be saved to the persistent disk, so by default the created conda environments **would be lost** if you created a new VM. 
