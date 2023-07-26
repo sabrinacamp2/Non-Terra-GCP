@@ -21,7 +21,7 @@ IMO, a promising solution to the above is to strip away the Terra UI and noteboo
 			These images are using R version 4.3.0 and Python version 3.7.12.<br> <img src="Attachments/bootdisk2.png" alt="bootdisk2" width = 70%)>
 		2. If you don't already have a persistent disk created, you can create and attach a disk at this time in the `Advanced options` section. These operate the same as Terra PDs, where if you delete the VM the persistent disk will remain. 
 			1. Here I've named mine `scamp-singlecell` to indicate which project's data will be stored here.
-			2. Consider creating a snapshot schedule [snapshot schedule](#persistent-disk-snapshot-schedule) at this time for automatic data back up. 
+			2. Consider creating a [snapshot schedule](#persistent-disk-snapshot-schedule) at this time for automatic data back up. 
 		3. In the `Advanced options` -> `Networking` -> `Network inferfaces` section, click on the drop down arrow. In the `External IPv4 address` section, choose the option to "reserve static external IP address". Note down the IP address, it will be used for navigating to your jupyter notebook in the browser (e.g., http://33.245.66.245:8080)
 		   - Note: Each static IP address costs money per hour. Navigate to `VPC network` -> `IP addresses` and release the static addresses not in use. [links](#creating-a-virtual-machine-and-persistent-disk)
 1. SSH into the VM from your local terminal
@@ -113,7 +113,7 @@ In this tutorial, I show how you can use the Terra notebook environments in a GC
 		#example
 		sudo chown -R 1000:100 /mnt/disks/scamp-singlecell
 		```
-1. Run the Terra docker of choice. 
+1. Run the Terra docker of choice. <a name="terra-docker"></a>
    - Example command below using one of the cached Terra docker images. 
 		```bash
 		sudo docker run -e R_LIBS='/home/jupyter/packages' --rm -it -u jupyter -p 8080:8080 -v /mnt/disks/{folder-name}:/home/jupyter --entrypoint /bin/bash {terra-docker-image-path}
@@ -124,7 +124,7 @@ In this tutorial, I show how you can use the Terra notebook environments in a GC
 		sudo docker run -e R_LIBS='/home/jupyter/packages' --rm -it -u jupyter -p 8080:8080 -v /mnt/disks/scamp-singlecell:/home/jupyter --entrypoint /bin/bash us.gcr.io/broad-dsp-gcr-public/terra-jupyter-bioconductor:2.1.11
 		```
 	- To explain some of this command, we are specifying that we want to interactively run the docker container as the non-root `jupyter` user (this is how its done in Terra notebooks). We specify to place user-installed R packages into the `/home/jupyter/packages` location. We perform port mapping `8080:8080` so that we can access the services running inside the docker (when we connect to a jupyter notebook via the browser). So far, only the `8080` port has worked, not sure why. We are mounting our persistent disk to the `/home/jupyer` location inside of the docker. This means when you are inside of the docker, ONLY the things saved in the `/home/jupyter` path will be saved to the persistent disk. Everything else will not be saved. When you exit the docker, navigate to `/mnt/disks/{folder-name}` to access what you put in `/home/jupyter` when you were inside of the docker. 
-	- Terra docker images not cached on the boot disk **can still be used here**, but the `docker run` command will take significantly longer. This is because it is pulling the docker from scratch. If you don't plan on using any of the cached images, I would recommend clearing the cache using the following command:
+	- Terra docker images not cached on the boot disk (those cached listed [here](#How-the-boot-disk-image-used-in-this-tutorial-was-created)) **can still be used here**, but the `docker run` command will take significantly longer. This is because it is pulling the docker from scratch. If you don't plan on using any of the cached images, I would recommend clearing the cache using the following command:
 	  ```bash
 	  docker system prune
 		```
@@ -157,7 +157,7 @@ In this tutorial, I show how you can use the Terra notebook environments in a GC
 		  grep -v "OK" terraPD_to_gbucket_{date}.log > filtered_output.csv
 		  ```
 	1. Copy google bucket folder contents to GCP PD 
-		1.  Run Terra docker of choice, if not already in the docker.
+		1.  [Run Terra docker of choice](#terra-docker), if not already in the docker.
 		2. Copy Terra PD contents from google bucket to GCP PD
 			```bash
 			gsutil -m cp -r -L "gbucket_to_gcpPD_{date}.log" gs://{google-bucket}/notebook-cache-{date}/* /home/jupyter/
