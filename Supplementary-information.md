@@ -27,7 +27,7 @@ screen
 # example, a jupyter notebook
 sudo docker run -e R_LIBS='/home/jupyter/packages' --rm -it -u jupyter -p 8080:8080 -v /mnt/disks/{folder-name}:/home/jupyter --entrypoint /bin/bash {terra-docker-image-path}
 
-jupyter-lab --no-browser --port=8080
+jupyter-lab --no-browser
 
 # disconnect from the screen and you should still be able to access notebook in browser
 press CTRL + A
@@ -77,8 +77,6 @@ Steps to how I created the boot disk image `terra-docker-image-100-boot-20230720
 	2. Python: us.gcr.io/broad-dsp-gcr-public/terra-jupyter-python:1.0.15
 	3. Default: us.gcr.io/broad-dsp-gcr-public/terra-jupyter-gatk:2.2.14
 
-
-Erica has several workspaces. I think she could have one PD per workspace, and mount just mount the workspace PD she is interested in using that time/day/whatever. If she wanted to do things on each PD at once, she could create two VMs, ssh into both, mount each PD, and all should be good. 
 
 ## Sudo access on docker
 - To be able to use the `sudo` command, you have to enter the docker as the root user. Generally wouldn't recommend accessing the docker as the root user because of file/folder permissions weirdness later. 
