@@ -61,7 +61,6 @@ After creating the schedule, you can attach your VM to it. <img src="Attachments
 
 If you are getting a permissions error, you may need to edit the IAM permissions. Talk to Sabrina
 ## How the boot disk image used in this tutorial was created
-<a name="boot"></a>
 Steps to how I created the boot disk image `terra-docker-image-100-boot-20230720`
 1. Install docker. 
    - The Terra notebook environments are [docker images](https://github.com/DataBiosphere/terra-docker). Therefore, in order to utilize these environments in our VM instances, we first have to install docker. I'm following [this](https://tomroth.com.au/gcp-docker/) tutorial which assumes a Debian Linux distribution, which is what GCP uses. 
