@@ -72,7 +72,7 @@ IMO, a promising solution to the above is to strip away the Terra UI and noteboo
 		sudo mkdir /mnt/disks
 		sudo mkdir /mnt/disks/scamp-singlecell
 		```
-	1. Mount disk to folder location <a name="mount" </a>
+	1. Mount disk to folder location <a name="mount" ></a>
 		```bash
 		sudo mount -o discard,defaults /dev/disk/by-id/{persistent-disk-name} /mnt/disks/{folder-name}
 		```
