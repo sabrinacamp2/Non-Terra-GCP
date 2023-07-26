@@ -3,7 +3,7 @@
 Recently in the lab, our two main avenues for performing primarily notebook-based analyses with high compute resources have either stopped being maintained (broad server) or come with a lot of headaches (Terra). 
 
 IMO, a promising solution to the above is to strip away the Terra UI and notebook management service, only using the underlying GCP VMs and disks to utilize jupyter notebooks. 
-
+[otherdoc](Supplementary.md#known-differences)
 ## Creating a virtual machine and persistent disk
 1. Creating a VM instance and attaching a persistent disk through the GCP UI
 	1. Ask Brendan and Erin to create a google cloud project for you (e.g. `vanallen-scamp` is mine). You will receive an email to accept the project invitation where you will click the link provided. Then, the project should show up when you navigate to the [Google Cloud Console](https://console.cloud.google.com/ ) and log in. <br>   <img src="Attachments/mainpage.png" alt="mainpage" width = 70%)>
@@ -242,8 +242,6 @@ In this tutorial, I show how you can use the Terra notebook environments in a GC
 6. [Run Terra docker of choice](#terra-docker)
 7. Run jupyter notebook or jupyter lab
 	1. e.g. `jupyter notebook --no-browser --port=8080` or `jupyter-lab --no-browser --port=8080`
-
-<div style="page-break-after: always; visibility: hidden"> \pagebreak </div>
 
 
 ## Supplementary information
