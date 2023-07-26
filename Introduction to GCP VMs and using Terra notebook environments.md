@@ -4,7 +4,7 @@ Recently in the lab, our two main avenues for performing primarily notebook-base
 
 IMO, a promising solution to the above is to strip away the Terra UI and notebook management service, only using the underlying GCP VMs and disks to utilize jupyter notebooks. 
 
-### Creating a virtual machine and persistent disk
+## Creating a virtual machine and persistent disk
 1. Creating a VM instance and attaching a persistent disk through the GCP UI
 	1. Ask Brendan and Erin to create a google cloud project for you (e.g. `vanallen-scamp` is mine). You will receive an email to accept the project invitation where you will click the link provided. Then, the project should show up when you navigate to the [Google Cloud Console](https://console.cloud.google.com/ ) and log in. <br>   <img src="Attachments/mainpage.png" alt="mainpage" width = 70%)>
 	3. Navigate to `Compute Engine` -> `VM instances` tab. Select `Create an instance`. 
@@ -91,7 +91,7 @@ IMO, a promising solution to the above is to strip away the Terra UI and noteboo
 		sudo chmod a+w /mnt/disks/scamp-singlecell
 	   ```
 
-### Running a Terra notebook environment in a GCP VM
+## Running a Terra notebook environment in a GCP VM
 
 The [ready-to-go Terra notebook environments](https://github.com/DataBiosphere/terra-docker/tree/master) have a lot of upsides. They already have google cloud, git, python, R, pip, conda, jupyter, FISS, and several major python/R packages installed (depending on which environment you choose). The notebook environments also interface with the boot and persistent disk very well. For example, packages that _come with the environment_ (ones you did not manually install) are stored on the boot disk. By default, boot disks are deleted when the VM is deleted. This is nice because if you switch to a _new_ Terra environment (R -> Python, for example), you wont have all the clutter of the previous environment installed. 
 
@@ -226,14 +226,14 @@ In this tutorial, I show how you can use the Terra notebook environments in a GC
 	1. Navigate to jupyter lab in your browser of choice. 
 	   - The address you are going to navigate to will be the following, replacing `external_ip_address` with yours. e.g. http://external_ip_address:8080/
 
-### I stopped my VM and restarted it. What all do I have to do to get jupyter up and running again?
+## I stopped my VM and restarted it. What all do I have to do to get jupyter up and running again?
 1. SSH into VM from local terminal
 2. Mount persistent disk to VM
 3. Run Terra docker of choice
 4. Run jupyter notebook or jupyter lab
 	1. e.g. `jupyter notebook --no-browser --port=8080` or `jupyter-lab --no-browser --port=8080`
 
-### I created a new VM (e.g., needed more memory). What all do I have to do to get jupyter up and running again? 
+## I created a new VM (e.g., needed more memory). What all do I have to do to get jupyter up and running again? 
 1. Set external IP to static or select a static IP address you have already created in the GCP UI and note it down.
 2. SSH into VM from local terminal
 3. Create folder to mount persistent disk to
@@ -243,8 +243,8 @@ In this tutorial, I show how you can use the Terra notebook environments in a GC
 7. Run jupyter notebook or jupyter lab
 	1. e.g. `jupyter notebook --no-browser --port=8080` or `jupyter-lab --no-browser --port=8080`
 
-### Supplementary information
-#### Conda environment and kernels
+## Supplementary information
+### Conda environment and kernels
 By default, conda environments are placed in `/opt/conda/envs`. As I mentioned earlier, only files in `/home/jupyter` will be saved to the persistent disk, so by default the created conda environments **would be lost** if you created a new VM. 
 
 To keep your conda environments, edit the conda configuration to save the environments to a location that is on the persistent disk. 
@@ -257,7 +257,7 @@ We can also use different conda environments within a Jupyter notebook using ker
 conda create --name scanpy_env scanpy ipykernel
 ```
 
-#### Keep process on VM running when you shut computer/ lose wifi/ close terminal
+### Keep process on VM running when you shut computer/ lose wifi/ close terminal
 To keep a process in the VM (e.g. a notebook session) running when you shut your computer/lose wifi connection/close terminal/etc, you need to use the `screen` function. 
 ```bash
 # SSH into the VM if not already
@@ -286,13 +286,13 @@ screen -ls | grep Detached | cut -d. -f1 | awk '{print $1}' | xargs kill
 
 ```
 
-#### [Persistent disk snapshot schedule](https://cloud.google.com/compute/docs/disks/scheduled-snapshots#:~:text=In%20the%20Name%20column%2C%20click,schedule%2C%20choose%20Create%20a%20schedule.)
+### [Persistent disk snapshot schedule](https://cloud.google.com/compute/docs/disks/scheduled-snapshots#:~:text=In%20the%20Name%20column%2C%20click,schedule%2C%20choose%20Create%20a%20schedule.)
 
 Google cloud has a feature to regularly and automatically back up your persistent disks. You can create the snapshot schedule when you create the disk, or afterwards. 
 
 At the moment, I don't think we have any guidelines here. I think it's best practice to select to autodelete snapshots after a certain amount of time to minimize storage costs. Also, perhaps a weekly snapshot is a good combination of frequency and storage and/or copy costs? 
 
-#### Instance schedule 
+### Instance schedule 
 Terra had a nice feature of auto-pausing your VM when you weren't using it for >30 minutes. This feature allows us to reduce costs of VMs we forgot to shut off. 
 
 This auto-pausing feature isn't the default GCP VM behavior, and I haven't yet found Terra's documentation on how they do this. 
@@ -303,7 +303,7 @@ However, google cloud does have what's called ["Instance schedules"](https://clo
 After creating the schedule, you can attach your VM to it. <img src="Attachments/instanceschedule_detailed.png" alt="instanceschedule_detailed" width = 70%)>
 
 If you are getting a permissions error, you may need to edit the IAM permissions. Talk to Sabrina
-#### How the boot disk image used in this tutorial was created
+### How the boot disk image used in this tutorial was created
 Steps to how I created the boot disk image `terra-docker-image-100-boot-20230720`
 1. Install docker. 
    - The Terra notebook environments are [docker images](https://github.com/DataBiosphere/terra-docker). Therefore, in order to utilize these environments in our VM instances, we first have to install docker. I'm following [this](https://tomroth.com.au/gcp-docker/) tutorial which assumes a Debian Linux distribution, which is what GCP uses. 
@@ -323,9 +323,7 @@ Steps to how I created the boot disk image `terra-docker-image-100-boot-20230720
 
 Erica has several workspaces. I think she could have one PD per workspace, and mount just mount the workspace PD she is interested in using that time/day/whatever. If she wanted to do things on each PD at once, she could create two VMs, ssh into both, mount each PD, and all should be good. 
 
-
-
-#### Sudo access on docker
+### Sudo access on docker
 - To be able to use the `sudo` command, you have to enter the docker as the root user. Generally wouldn't recommend accessing the docker as the root user because of file/folder permissions weirdness later. 
 	```bash
 	sudo docker run -e R_LIBS='/home/jupyter/packages' --rm -it -u root -p 8080:8080 -v /mnt/disks/{folder-name}:/home/jupyter --entrypoint /bin/bash {terra-docker-image-path}
@@ -336,7 +334,5 @@ Erica has several workspaces. I think she could have one PD per workspace, and m
 	sudo docker run -e R_LIBS='/home/jupyter/packages' --rm -it -u root -p 8080:8080 -v /mnt/disks/scamp-singlecell:/home/jupyter --entrypoint /bin/bash us.gcr.io/broad-dsp-gcr-public/terra-jupyter-bioconductor:2.1.11
 	```
 
-
-
-#### Known differences 
+### Known differences 
 - cant access PROJECT, WORKSPACE, etc environment variables
