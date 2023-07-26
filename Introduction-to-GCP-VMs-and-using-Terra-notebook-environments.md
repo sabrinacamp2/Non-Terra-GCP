@@ -6,7 +6,7 @@ IMO, a promising solution to the above is to strip away the Terra UI and noteboo
 
 ## Creating a virtual machine and persistent disk
 1. Creating a VM instance and attaching a persistent disk through the GCP UI
-	1. Ask Brendan and Erin to create a google cloud project for you (e.g. `vanallen-scamp` is mine). You will receive an email to accept the project invitation where you will click the link provided. Then, the project should show up when you navigate to the [Google Cloud Console](https://console.cloud.google.com/ ) and log in. <br>   <img src="Attachments/mainpage.png" alt="mainpage" width = 70%)>
+	1. Ask Brendan and Erin to create a google cloud project for you (e.g. `vanallen-scamp` is mine). You will receive an email to accept the project invitation where you will click the link provided. Then, the project should show up when you navigate to the [Google Cloud Console](https://console.cloud.google.com/ ) and log in. <br><br>   <img src="Attachments/mainpage.png" alt="mainpage" width = 70%)><br><br>
 	3. Navigate to `Compute Engine` -> `VM instances` tab. Select `Create an instance`. 
 		1. General lab guidelines for VM naming can be found in our [GCP Handbook - Non-Terra](https://docs.google.com/document/d/1QYqFy7rCAAmsRMfkMtYUPAHyM-FKONMHOq4nD4Tpji0/edit)
 			1. Here, I named mine `scamp-cpu-16` encoding that the VM is using CPUs not GPUs and has 16 GB of memory.
@@ -21,7 +21,7 @@ IMO, a promising solution to the above is to strip away the Terra UI and noteboo
 			These images are using R version 4.3.0 and Python version 3.7.12.<br> <img src="Attachments/bootdisk2.png" alt="bootdisk2" width = 70%)>
 		2. If you don't already have a persistent disk created, you can create and attach a disk at this time in the `Advanced options` section. These operate the same as Terra PDs, where if you delete the VM the persistent disk will remain. 
 			1. Here I've named mine `scamp-singlecell` to indicate which project's data will be stored here.
-			2. Consider creating a [snapshot schedule](#persistent-disk-snapshot-schedule) at this time for automatic data back up. 
+			2. Consider creating a [snapshot schedule](supplementary-information.md#persistent-disk-snapshot-schedule) at this time for automatic data back up. 
 		3. In the `Advanced options` -> `Networking` -> `Network inferfaces` section, click on the drop down arrow. In the `External IPv4 address` section, choose the option to "reserve static external IP address". Note down the IP address, it will be used for navigating to your jupyter notebook in the browser (e.g., http://33.245.66.245:8080)
 		   - Note: Each static IP address costs money per hour. Navigate to `VPC network` -> `IP addresses` and release the static addresses not in use. 
 1. SSH into the VM from your local terminal
