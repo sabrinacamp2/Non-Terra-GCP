@@ -243,7 +243,7 @@ In this tutorial, I show how you can use the Terra notebook environments in a GC
 7. Run jupyter notebook or jupyter lab
 	1. e.g. `jupyter notebook --no-browser --port=8080` or `jupyter-lab --no-browser --port=8080`
 
-<div style="page-break-after: always;"></div>
+<div style="page-break-after: always; visibility: hidden"> \pagebreak </div>
 
 
 ## Supplementary information
