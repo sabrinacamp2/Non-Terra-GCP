@@ -23,7 +23,7 @@ IMO, a promising solution to the above is to strip away the Terra UI and noteboo
 			1. Here I've named mine `scamp-singlecell` to indicate which project's data will be stored here.
 			2. Consider creating a snapshot schedule at this time for automatic data back up. 
 		3. In the `Advanced options` -> `Networking` -> `Network inferfaces` section, click on the drop down arrow. In the `External IPv4 address` section, choose the option to "reserve static external IP address". Note down the IP address, it will be used for navigating to your jupyter notebook in the browser (e.g., http://33.245.66.245:8080)
-		   - Note: Each static IP address costs money per hour. Navigate to `VPC network` -> `IP addresses` and release the static addresses not in use. 
+		   - Note: Each static IP address costs money per hour. Navigate to `VPC network` -> `IP addresses` and release the static addresses not in use. [links](#creating-a-virtual-machine-and-persistent-disk)
 1. SSH into the VM from your local terminal
 	1. Set your default google cloud project to be the one Brendan and Erin assigned to you using the following command: 
 		```bash
