@@ -54,8 +54,8 @@ Terra had a nice feature of auto-pausing your VM when you weren't using it for >
 
 This auto-pausing feature isn't the default GCP VM behavior, and I haven't yet found Terra's documentation on how they do this. 
 
-However, google cloud does have what's called ["Instance schedules"](https://cloud.google.com/compute/docs/instances/schedule-instance-start-stop). Instance schedules allow you to program a start and/or stop time to a VM. Here, I am creating a schedule to stop my instance at 6PM daily in case I forget to shut it off myself.
-<img src="Attachments/instanceschedule.png" alt="instanceschedule" width = 70%)>
+However, google cloud does have what's called ["Instance schedules"](https://cloud.google.com/compute/docs/instances/schedule-instance-start-stop). Instance schedules allow you to program a start and/or stop time to a VM. Here, I am creating a schedule to stop my instance at 6PM daily in case I forget to shut it off myself.<br><br>
+<img src="Attachments/instanceschedule.png" alt="instanceschedule" width = 60% style="border: 2px solid  black;"><br>
 
 After creating the schedule, you can attach your VM to it. <img src="Attachments/instanceschedule_detailed.png" alt="instanceschedule_detailed" width = 70%)>
 
