@@ -1,24 +1,6 @@
 
 # Supplementary information
 
-## I stopped my VM and restarted it. What all do I have to do to get jupyter up and running again?
-1. [SSH into VM from local terminal](Introduction-to-GCP-VMs-and-using-Terra-notebook-environments.md#ssh)
-2. [Mount persistent disk to VM](#mount)
-3. [Run Terra docker of choice](#terra-docker)
-4. Run jupyter notebook or jupyter lab
-	1. e.g. `jupyter notebook --no-browser --port=8080` or `jupyter-lab --no-browser --port=8080`
-
-## I created a new VM (e.g., needed more memory). What all do I have to do to get jupyter up and running again? 
-1. Set external IP to static or select a static IP address you have already created in the GCP UI and note it down.
-2. [SSH into VM from local terminal](#ssh)
-3. [Create folder to mount persistent disk to](#mount-folder)
-4. [Mount persistent disk to VM](#mount)
-5. [Allow docker user to read/write to PD](#docker-read)
-6. [Run Terra docker of choice](#terra-docker)
-7. Run jupyter notebook or jupyter lab
-	1. e.g. `jupyter notebook --no-browser --port=8080` or `jupyter-lab --no-browser --port=8080`
-
-
 ## Conda environment and kernels
 By default, conda environments are placed in `/opt/conda/envs`. As I mentioned earlier, only files in `/home/jupyter` will be saved to the persistent disk, so by default the created conda environments **would be lost** if you created a new VM. 
 

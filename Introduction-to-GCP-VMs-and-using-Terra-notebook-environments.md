@@ -225,3 +225,22 @@ In this tutorial, I show how you can use the Terra notebook environments in a GC
 			```
 	1. Navigate to jupyter lab in your browser of choice. 
 	   - The address you are going to navigate to will be the following, replacing `external_ip_address` with yours. e.g. http://external_ip_address:8080/
+
+
+# Quick start
+## I stopped my VM and restarted it. What all do I have to do to get jupyter up and running again?
+1. [SSH into VM from local terminal](#ssh)
+2. [Mount persistent disk to VM](#mount)
+3. [Run Terra docker of choice](#terra-docker)
+4. Run jupyter notebook or jupyter lab
+	1. e.g. `jupyter notebook --no-browser --port=8080` or `jupyter-lab --no-browser --port=8080`
+
+## I created a new VM (e.g., needed more memory). What all do I have to do to get jupyter up and running again? 
+1. Set external IP to static or select a static IP address you have already created in the GCP UI and note it down.
+2. [SSH into VM from local terminal](#ssh)
+3. [Create folder to mount persistent disk to](#mount-folder)
+4. [Mount persistent disk to VM](#mount)
+5. [Allow docker user to read/write to PD](#docker-read)
+6. [Run Terra docker of choice](#terra-docker)
+7. Run jupyter notebook or jupyter lab
+	1. e.g. `jupyter notebook --no-browser --port=8080` or `jupyter-lab --no-browser --port=8080`
