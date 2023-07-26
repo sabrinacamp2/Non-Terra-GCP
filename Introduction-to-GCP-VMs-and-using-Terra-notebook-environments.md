@@ -11,14 +11,14 @@ IMO, a promising solution to the above is to strip away the Terra UI and noteboo
 		1. General lab guidelines for VM naming can be found in our [GCP Handbook - Non-Terra](https://docs.google.com/document/d/1QYqFy7rCAAmsRMfkMtYUPAHyM-FKONMHOq4nD4Tpji0/edit)
 			1. Here, I named mine `scamp-cpu-16` encoding that the VM is using CPUs not GPUs and has 16 GB of memory.
 		2. Set region to `us-central1 (Iowa)`
-		3. I've been keeping most options as the default. I've been choosing from the Standard machine types. <br> <br><img src="Attachments/machinetypes.png" alt="machinetypes" width = 70%)><br>
+		3. I've been keeping most options as the default. I've been choosing from the Standard machine types. <br> <br><img src="Attachments/machinetypes.png" alt="machinetypes" width = 60%)><br>
 		4. Modify the firewall rules.
-			1. Allow both HTTP and HTTPS traffic<br> <img src="Attachments/firewall.png" alt="firewall" width = 70%)>
+			1. Allow both HTTP and HTTPS traffic<br><br> <img src="Attachments/firewall.png" alt="firewall" width = 60%)><br>
 		5. Ask Sabrina to [give you access to her project](https://cloud.google.com/deployment-manager/docs/configuration/using-images-from-other-projects-for-vm-instances#console) and change the boot disk to be from the Custom Image named `terra-docker-image-100-boot-20230720`. This boot disk already has Docker installed and the following three Terra notebook environments are cached: 
 		   - **R/Bioconductor**: us.gcr.io/broad-dsp-gcr-public/terra-jupyter-bioconductor:2.1.11
 		   - **Python**: us.gcr.io/broad-dsp-gcr-public/terra-jupyter-python:1.0.15
 		   - **Default**: us.gcr.io/broad-dsp-gcr-public/terra-jupyter-gatk:2.2.14
-			These images are using R version 4.3.0 and Python version 3.7.12.<br> <img src="Attachments/bootdisk2.png" alt="bootdisk2" width = 70%)>
+			These images are using R version 4.3.0 and Python version 3.7.12.<br><br> <img src="Attachments/bootdisk2.png" alt="bootdisk2" width = 70%)><br>
 		2. If you don't already have a persistent disk created, you can create and attach a disk at this time in the `Advanced options` section. These operate the same as Terra PDs, where if you delete the VM the persistent disk will remain. 
 			1. Here I've named mine `scamp-singlecell` to indicate which project's data will be stored here.
 			2. Consider creating a [snapshot schedule](supplementary-information.md#persistent-disk-snapshot-schedule) at this time for automatic data back up. 
@@ -102,7 +102,7 @@ Terra has some good documentation on boot and persistent disks [here](https://su
 In this tutorial, I show how you can use the Terra notebook environments in a GCP VM. This allows us to use these nifty environments without having to interface with the Terra UI. 
 
 1. Create a firewall rule allowing a specific port number. 
-   - This will be relevant to running the jupyter notebook in the browser. Navigate to VPC network -> Firewall -> Create Firewall Rule <br><img src="Attachments/vpc.png" alt="vpc" width = 70%)><br> Set Targets to "All instances in the network". Set source IPv4 ranges to "0.0.0.0/0". Select TCP Ports and enter "8080". Create the firewall rule.<br><img src="Attachments/firewallrule.png" alt="firewallrule" width = 70%)>
+   - This will be relevant to running the jupyter notebook in the browser. Navigate to VPC network -> Firewall -> Create Firewall Rule <br><br><img src="Attachments/vpc.png" alt="vpc" width = 60%)><br><br> Set Targets to "All instances in the network". Set source IPv4 ranges to "0.0.0.0/0". Select TCP Ports and enter "8080". Create the firewall rule.<br><br><img src="Attachments/firewallrule.png" alt="firewallrule" width = 60%)>
 1. Set persistent disk permissions so that docker can read/write to it.
    - We also need to set the appropriate permissions for our persistent disk prior to running the Terra docker so that when we enter the docker and mount our persistent disk the docker user can read/write to it. The idea is more fully explored in this [stackoverflow post](https://stackoverflow.com/questions/29245216/write-in-shared-volumes-docker). <a name="docker-read"> </a>
 		```bash
@@ -124,7 +124,7 @@ In this tutorial, I show how you can use the Terra notebook environments in a GC
 		sudo docker run -e R_LIBS='/home/jupyter/packages' --rm -it -u jupyter -p 8080:8080 -v /mnt/disks/scamp-singlecell:/home/jupyter --entrypoint /bin/bash us.gcr.io/broad-dsp-gcr-public/terra-jupyter-bioconductor:2.1.11
 		```
 	- To explain some of this command, we are specifying that we want to interactively run the docker container as the non-root `jupyter` user (this is how its done in Terra notebooks). We specify to place user-installed R packages into the `/home/jupyter/packages` location. We perform port mapping `8080:8080` so that we can access the services running inside the docker (when we connect to a jupyter notebook via the browser). So far, only the `8080` port has worked, not sure why. We are mounting our persistent disk to the `/home/jupyer` location inside of the docker. This means when you are inside of the docker, ONLY the things saved in the `/home/jupyter` path will be saved to the persistent disk. Everything else will not be saved. When you exit the docker, navigate to `/mnt/disks/{folder-name}` to access what you put in `/home/jupyter` when you were inside of the docker. 
-	- Terra docker images not cached on the boot disk (those cached listed [here](#How-the-boot-disk-image-used-in-this-tutorial-was-created)) **can still be used here**, but the `docker run` command will take significantly longer. This is because it is pulling the docker from scratch. If you don't plan on using any of the cached images, I would recommend clearing the cache using the following command:
+	- Terra docker images not cached on the boot disk (those cached listed [here](supplementary-information.md#How-the-boot-disk-image-used-in-this-tutorial-was-created)) **can still be used here**, but the `docker run` command will take significantly longer. This is because it is pulling the docker from scratch. If you don't plan on using any of the cached images, I would recommend clearing the cache using the following command:
 	  ```bash
 	  docker system prune
 		```
