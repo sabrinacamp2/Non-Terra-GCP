@@ -242,7 +242,10 @@ In this tutorial, I show how you can use the Terra notebook environments in a GC
 6. [Run Terra docker of choice](#terra-docker)
 7. Run jupyter notebook or jupyter lab
 	1. e.g. `jupyter notebook --no-browser --port=8080` or `jupyter-lab --no-browser --port=8080`
+
 <div style="page-break-after: always;"></div>
+
+
 ## Supplementary information
 ### Conda environment and kernels
 By default, conda environments are placed in `/opt/conda/envs`. As I mentioned earlier, only files in `/home/jupyter` will be saved to the persistent disk, so by default the created conda environments **would be lost** if you created a new VM. 
