@@ -5,7 +5,7 @@ IMO, a promising solution to the above is to strip away the Terra UI and noteboo
 
 ### Creating a virtual machine and persistent disk
 1. Creating a VM instance and attaching a persistent disk through the GCP UI
-	1. Ask Brendan and Erin to create a google cloud project for you (e.g. `vanallen-scamp` is mine). You will receive an email to accept the project invitation where you will click the link provided. Then, the project should show up when you navigate to the [Google Cloud Console](https://console.cloud.google.com/ )and log in. <br>   ![[Pasted image 20230718164316.png|500]]
+	1. Ask Brendan and Erin to create a google cloud project for you (e.g. `vanallen-scamp` is mine). You will receive an email to accept the project invitation where you will click the link provided. Then, the project should show up when you navigate to the [Google Cloud Console](https://console.cloud.google.com/ )and log in. <br>   !(Attachments/Pasted image 20230718164316.png)
 	2. Navigate to `Compute Engine` -> `VM instances` tab. Select `Create an instance`. 
 		1. General lab guidelines for VM naming can be found in our [GCP Handbook - Non-Terra](https://docs.google.com/document/d/1QYqFy7rCAAmsRMfkMtYUPAHyM-FKONMHOq4nD4Tpji0/edit)
 			1. Here, I named mine `scamp-cpu-16` encoding that the VM is using CPUs not GPUs and has 16 GB of memory.
@@ -13,7 +13,7 @@ IMO, a promising solution to the above is to strip away the Terra UI and noteboo
 		3. I've been keeping most options as the default. I've been choosing from the Standard machine types. <br> ![[Pasted image 20230718170027.png|300]]
 		4. Modify the firewall rules.
 			1. Allow both HTTP and HTTPS traffic<br> ![[Pasted image 20230718165209.png|300]]
-		5. Change the boot disk to be from the Custom Image named `terra-docker-image-100-boot-20230720`. This boot disk already has Docker installed and the following three Terra notebook environments are cached:  ^51434d
+		5. Ask Sabrina to [give you access to her project](https://cloud.google.com/deployment-manager/docs/configuration/using-images-from-other-projects-for-vm-instances#console) and change the boot disk to be from the Custom Image named `terra-docker-image-100-boot-20230720`. This boot disk already has Docker installed and the following three Terra notebook environments are cached:  ^51434d
 		   - **R/Bioconductor**: us.gcr.io/broad-dsp-gcr-public/terra-jupyter-bioconductor:2.1.11
 		   - **Python**: us.gcr.io/broad-dsp-gcr-public/terra-jupyter-python:1.0.15
 		   - **Default**: us.gcr.io/broad-dsp-gcr-public/terra-jupyter-gatk:2.2.14
@@ -58,7 +58,9 @@ IMO, a promising solution to the above is to strip away the Terra UI and noteboo
 		```bash
 		sudo mkdir /mnt/disks
 		sudo mkdir /mnt/disks/{folder-name}
+		```
 		
+		```bash
 		#example
 		sudo mkdir /mnt/disks
 		sudo mkdir /mnt/disks/scamp-singlecell
@@ -114,13 +116,13 @@ In this tutorial, I show how you can use the Terra notebook environments in a GC
 		I recommend this because the Terra docker images are huge, and if you will be utilizing other ones, the boot disk may quickly run out of space. Consider creating your own book disk image with the Terra docker images you will be using.
 1. Set up gcloud authentication.
    - With newer versions of gcloud, it's no longer possible to authenticate on a machine that doesn't have a web browser (like the GCP VM). The new Instructions below for authenticating a machine without a web browser is from the [google cloud SDK documentation](https://cloud.google.com/sdk/docs/authorizing#auth-login) You _should_ only have to do this once, because the credentials are stored on the persistent disk and could be used with any VM. _I think?_
-		1. Run the following command in the GCP VM:
+		1. Once inside Terra docker, run the following command in the GCP VM:
 		   ```bash
 		   gcloud auth login --no-browser
 			```
 		2. Copy the long command that begins with `gcloud auth login --remote-bootstrap="`
 		3. Paste and run this command on the command line of a different terminal (e.g. your local terminal) that has gcloud installed
-		4. Copy the long URL output from the alternative terminal and paste it back to the first machine. Press enter. You should now be authenticated. 
+		4. Copy the long URL output from the alternative terminal and paste it back to the first machine terminal. Press enter. You should now be authenticated. 
 1. Transfer Terra persistent disk data to GCP persistent disk
 	- Before performing these steps, I would recommend doing your best to clean up your Terra PD, deleting what you no longer need. Similar to cleaning before you move apartments, there is no need to bring junk to a new place! 
 
@@ -132,8 +134,8 @@ In this tutorial, I show how you can use the Terra notebook environments in a GC
 		e.g. gsutil -m cp -r -L "terraPD_to_gbucket_20230724.log" /home/jupyter gs://fc-3a463b92-98d9-47e3-9d16-4ba001069ee9/notebook-cache-20230724
 		```
 		
-		- This will not copy over conda environments unless you had the conda config set to save in a `/home/jupyter` directory. Consider copying environment folder location to `/home/jupyter` before copying Terra PD to google bucket. 
-		- Check if any files were not successfully transferred by inspecting `filtered_output.csv`
+		- This will not copy over conda environments unless you had the conda config set to save in a `/home/jupyter` directory. (sorry) Consider exporting environments to .yml files for easy rebuild on GCP VM. 
+		- [Optional] Check if any files were not successfully transferred by inspecting `filtered_output.csv`
 		  ```bash
 		  grep -v "OK" terraPD_to_gbucket_{date}.log > filtered_output.csv
 		  ```
@@ -175,7 +177,7 @@ In this tutorial, I show how you can use the Terra notebook environments in a GC
 			```
 	1. Navigate to the jupyter notebook in your browser of choice. 
 	   - The address you are going to navigate to will be the following, replacing `external_ip_address` with yours from step 2. e.g. http://external_ip_address:8080/notebooks
-1. [Option two] Jupyter lab ^f0c684
+1. [Option two, Sabrina preferred] Jupyter lab ^f0c684
 	1. Create the jupyter lab configuration and password. 
 	   - See below.
 		   ```bash
@@ -205,18 +207,19 @@ In this tutorial, I show how you can use the Terra notebook environments in a GC
 	1. Navigate to jupyter lab in your browser of choice. 
 	   - The address you are going to navigate to will be the following, replacing `external_ip_address` with yours. e.g. http://external_ip_address:8080/
 
-### I stopped my VM and now resumed it. What all do I have to do to get jupyter up and running again?
+### I stopped my VM and restarted it. What all do I have to do to get jupyter up and running again?
 1. [SSH into VM from local terminal](#^3ed8b3)
 2. [Mount persistent disk to VM](#^8fc414)
 3. [Run Terra docker of choice](#^65f372)
 4. Run jupyter notebook or jupyter lab
 	1. e.g. `jupyter notebook --no-browser --port=8080` or `jupyter-lab --no-browser --port=8080`
 
-### I needed to change my VM. What all do I have to do to get jupyter up and running again? 
+### I created a new VM (e.g., needed more memory). What all do I have to do to get jupyter up and running again? 
 1. [Set external IP to static](#^9ab8c2) or select a static IP address you have already created in the GCP UI and note it down.
 2. [SSH into VM from local terminal](#^3ed8b3)
-3. [Mount persistent disk to VM](#^8fc414) 
-4. [Allow docker user to read/write to PD](#^f97532)
+3. Create folder to mount persistent disk to
+4. [Mount persistent disk to VM](#^8fc414) 
+5. [Allow docker user to read/write to PD](#^f97532)
 6. [Run Terra docker of choice](#^65f372)
 7. Run jupyter notebook or jupyter lab
 	1. e.g. `jupyter notebook --no-browser --port=8080` or `jupyter-lab --no-browser --port=8080`
@@ -235,6 +238,35 @@ conda config --append envs_dirs /home/jupyter/envs
 We can also use different conda environments within a Jupyter notebook using kernels. S/O Erica Pimenta for providing some insight into this. The main idea is that if you want to use a conda environment with a jupyter notebook, you need to have `ipykernel` installed in the environment. If you want the R kernel, you would need to have `r-irkernel` installed in the environment. For example, the below command would create an environment and associated python kernel for the `scanpy_env`. You could then use the `scanpy_env` python kernel and associated packages in a jupyter notebook.
 ```bash
 conda create --name scanpy_env scanpy ipykernel
+```
+
+#### Keep process on VM running when you shut computer/ lose wifi/ close terminal
+To keep a process in the VM (e.g. a notebook session) running when you shut your computer/lose wifi connection/close terminal/etc, you need to use the `screen` function. 
+```bash
+# SSH into the VM if not already
+gcloud compute ssh --zone "us-central1-a" "{instance-name}" --project "{project-id}"
+
+# start screen
+screen
+
+# start process that you want to keep running regardless of connection
+# example, a jupyter notebook
+sudo docker run -e R_LIBS='/home/jupyter/packages' --rm -it -u jupyter -p 8080:8080 -v /mnt/disks/{folder-name}:/home/jupyter --entrypoint /bin/bash {terra-docker-image-path}
+
+jupyter-lab --no-browser --port=8080
+
+# disconnect from the screen and you should still be able to access notebook in browser
+press CTRL + A
+press CTRL + D
+
+## other useful functions with screens
+# list screens
+screen -ls
+# connect back to a screen
+screen -r {screen-name}
+# end all detatched screens
+screen -ls | grep Detached | cut -d. -f1 | awk '{print $1}' | xargs kill
+
 ```
 
 #### [Persistent disk snapshot schedule](https://cloud.google.com/compute/docs/disks/scheduled-snapshots#:~:text=In%20the%20Name%20column%2C%20click,schedule%2C%20choose%20Create%20a%20schedule.)
@@ -279,7 +311,7 @@ Erica has several workspaces. I think she could have one PD per workspace, and m
 
 
 #### Sudo access on docker
-- To be able to use the `sudo` command, you have to enter the docker as the root user. 
+- To be able to use the `sudo` command, you have to enter the docker as the root user. Generally wouldn't recommend accessing the docker as the root user because of file/folder permissions weirdness later. 
 	```bash
 	sudo docker run -e R_LIBS='/home/jupyter/packages' --rm -it -u root -p 8080:8080 -v /mnt/disks/{folder-name}:/home/jupyter --entrypoint /bin/bash {terra-docker-image-path}
 	
