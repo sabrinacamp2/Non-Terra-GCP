@@ -1,3 +1,4 @@
+# Introduction to GCP VMs and using Terra notebook environments
 
 Recently in the lab, our two main avenues for performing primarily notebook-based analyses with high compute resources have either stopped being maintained (broad server) or come with a lot of headaches (Terra). 
 
