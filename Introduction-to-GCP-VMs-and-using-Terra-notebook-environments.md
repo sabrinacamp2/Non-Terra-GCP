@@ -61,7 +61,7 @@ IMO, a promising solution to the above is to strip away the Terra UI and noteboo
 		sudo mkfs.ext4 -m 0 -E lazy_itable_init=0,lazy_journal_init=0,discard /dev/disk/by-id/scsi-0Google_PersistentDisk_scamp-singlecell
 		```
 1. Mount the formatted and attached disk
-	1. Create a folder to mount the disk to (specific naming up to you) <a name=mount-folder </a>
+	1. Create a folder to mount the disk to (specific naming up to you) <a name="mount-folder"></a>
 		```bash
 		sudo mkdir /mnt/disks
 		sudo mkdir /mnt/disks/{folder-name}
