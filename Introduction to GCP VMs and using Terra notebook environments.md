@@ -5,19 +5,19 @@ IMO, a promising solution to the above is to strip away the Terra UI and noteboo
 
 ### Creating a virtual machine and persistent disk
 1. Creating a VM instance and attaching a persistent disk through the GCP UI
-	1. Ask Brendan and Erin to create a google cloud project for you (e.g. `vanallen-scamp` is mine). You will receive an email to accept the project invitation where you will click the link provided. Then, the project should show up when you navigate to the [Google Cloud Console](https://console.cloud.google.com/ )and log in. <br>   ![mainpage](Attachments/mainpage.png)
+	1. Ask Brendan and Erin to create a google cloud project for you (e.g. `vanallen-scamp` is mine). You will receive an email to accept the project invitation where you will click the link provided. Then, the project should show up when you navigate to the [Google Cloud Console](https://console.cloud.google.com/ ) and log in. <br>   ![mainpage](Attachments/mainpage.png)
 	2. Navigate to `Compute Engine` -> `VM instances` tab. Select `Create an instance`. 
 		1. General lab guidelines for VM naming can be found in our [GCP Handbook - Non-Terra](https://docs.google.com/document/d/1QYqFy7rCAAmsRMfkMtYUPAHyM-FKONMHOq4nD4Tpji0/edit)
 			1. Here, I named mine `scamp-cpu-16` encoding that the VM is using CPUs not GPUs and has 16 GB of memory.
 		2. Set region to `us-central1 (Iowa)`
-		3. I've been keeping most options as the default. I've been choosing from the Standard machine types. <br> ![[Pasted image 20230718170027.png|300]]
+		3. I've been keeping most options as the default. I've been choosing from the Standard machine types. <br> ![machinetypes](Attachments/machinetypes.png)
 		4. Modify the firewall rules.
-			1. Allow both HTTP and HTTPS traffic<br> ![[Pasted image 20230718165209.png|300]]
+			1. Allow both HTTP and HTTPS traffic<br> ![firewall](Attachments/firewall.png)
 		5. Ask Sabrina to [give you access to her project](https://cloud.google.com/deployment-manager/docs/configuration/using-images-from-other-projects-for-vm-instances#console) and change the boot disk to be from the Custom Image named `terra-docker-image-100-boot-20230720`. This boot disk already has Docker installed and the following three Terra notebook environments are cached:  ^51434d
 		   - **R/Bioconductor**: us.gcr.io/broad-dsp-gcr-public/terra-jupyter-bioconductor:2.1.11
 		   - **Python**: us.gcr.io/broad-dsp-gcr-public/terra-jupyter-python:1.0.15
 		   - **Default**: us.gcr.io/broad-dsp-gcr-public/terra-jupyter-gatk:2.2.14
-			These images are using R version 4.3.0 and Python version 3.7.12. ![[Pasted image 20230719193604.png|300]]
+			These images are using R version 4.3.0 and Python version 3.7.12. ![bootdisk2](Attachments/bootdisk2.png)
 		2. If you don't already have a persistent disk created, you can create and attach a disk at this time in the `Advanced options` section. These operate the same as Terra PDs, where if you delete the VM the persistent disk will remain. 
 			1. Here I've named mine `scamp-singlecell` to indicate which project's data will be stored here.
 			2. Consider creating a [snapshot schedule](#^38dea0) at this time for automatic data back up. 
@@ -91,7 +91,7 @@ Terra has some good documentation on boot and persistent disks [here](https://su
 In this tutorial, I show how you can use the Terra notebook environments in a GCP VM. This allows us to use these nifty environments without having to interface with the Terra UI. 
 
 1. Create a firewall rule allowing a specific port number. 
-   - This will be relevant to running the jupyter notebook in the browser. Navigate to VPC network -> Firewall -> Create Firewall Rule <br>![[Pasted image 20230719130231.png|200]] <br> Set Targets to "All instances in the network". Set source IPv4 ranges to "0.0.0.0/0". Select TCP Ports and enter "8080". Create the firewall rule.<br> ![[Pasted image 20230719130512.png|300]]
+   - This will be relevant to running the jupyter notebook in the browser. Navigate to VPC network -> Firewall -> Create Firewall Rule <br>![vpc](Attachments/vpc.png)<br> Set Targets to "All instances in the network". Set source IPv4 ranges to "0.0.0.0/0". Select TCP Ports and enter "8080". Create the firewall rule.<br> ![firewallrule](Attachments/firewallrule.png)
 1. Set persistent disk permissions so that docker can read/write to it. ^f97532
    - We also need to set the appropriate permissions for our persistent disk prior to running the Terra docker so that when we enter the docker and mount our persistent disk the docker user can read/write to it. The idea is more fully explored in this [stackoverflow post](https://stackoverflow.com/questions/29245216/write-in-shared-volumes-docker). 
 		```bash
@@ -169,7 +169,7 @@ In this tutorial, I show how you can use the Terra notebook environments in a GC
 			c.NotebookApp.port = 8080
 			```
 		
-			![[Pasted image 20230719141104.png|300]]
+			![jupyterconfig](Attachments/jupyterconfig.png)
 	1. Run jupyter notebook.
 	   - Below command.
 		   ```bash
@@ -198,7 +198,7 @@ In this tutorial, I show how you can use the Terra notebook environments in a GC
 			c.NotebookApp.port = 8080
 			```
 		
-			![[Pasted image 20230719141104.png|300]]
+			![jupyterconfig](Attachments/jupyterconfig.png)
 	1. Run jupyter lab.
 	   - Below command.
 		   ```bash
@@ -283,9 +283,9 @@ Terra had a nice feature of auto-pausing your VM when you weren't using it for >
 This auto-pausing feature isn't the default GCP VM behavior, and I haven't yet found Terra's documentation on how they do this. 
 
 However, google cloud does have what's called ["Instance schedules"](https://cloud.google.com/compute/docs/instances/schedule-instance-start-stop). Instance schedules allow you to program a start and/or stop time to a VM. Here, I am creating a schedule to stop my instance at 6PM daily in case I forget to shut it off myself.
- ![[Pasted image 20230724133235.png|300]]
+ ![instanceschedule](Attachments/instanceschedule.png)
 
-After creating the schedule, you can attach your VM to it. ![[Pasted image 20230724133341.png]]
+After creating the schedule, you can attach your VM to it. ![instanceschedule_detailed](Attachments/instanceschedule_detailed.png)
 
 If you are getting a permissions error, you may need to edit the IAM permissions. Talk to Sabrina
 #### How the boot disk image used in this tutorial was created
