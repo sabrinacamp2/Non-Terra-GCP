@@ -27,7 +27,9 @@ IMO, a promising solution to the above is to strip away the Terra UI and noteboo
 	1. Set your default google cloud project to be the one Brendan and Erin assigned to you using the following command: 
 		```bash
 		gcloud config set project {project-id}
-
+		```
+		
+		```bash
 		#example
 		gcloud config set project vanallen-scamp
 		```
@@ -35,7 +37,9 @@ IMO, a promising solution to the above is to strip away the Terra UI and noteboo
 	2. SSH into the VM instance using the following command: 
 		```bash
 		gcloud compute ssh --zone "us-central1-a" "{instance-name}" --project "{project-id}"
-
+		```
+		
+		```bash
 		#example
 		gcloud compute ssh --zone "us-central1-a" "scamp-cpu-16" --project "vanallen-scamp"
 		```
@@ -49,7 +53,9 @@ IMO, a promising solution to the above is to strip away the Terra UI and noteboo
 	2. [Format the persistent disk](https://cloud.google.com/compute/docs/disks/format-mount-disk-linux) using the following command: 
 		```bash
 		sudo mkfs.ext4 -m 0 -E lazy_itable_init=0,lazy_journal_init=0,discard /dev/disk/by-id/{persistent-disk-name}
-
+		```
+		
+		```bash
 		#example
 		sudo mkfs.ext4 -m 0 -E lazy_itable_init=0,lazy_journal_init=0,discard /dev/disk/by-id/scsi-0Google_PersistentDisk_scamp-singlecell
 		```
@@ -68,14 +74,18 @@ IMO, a promising solution to the above is to strip away the Terra UI and noteboo
 	1. Mount disk to folder location
 		```bash
 		sudo mount -o discard,defaults /dev/disk/by-id/{persistent-disk-name} /mnt/disks/{folder-name}
+		```
 		
+		```bash
 		#example
 		sudo mount -o discard,defaults /dev/disk/by-id/scsi-0Google_PersistentDisk_scamp-singlecell /mnt/disks/scamp-singlecell
 		```
 	1. Set read and write permissions for the disk
 		```bash
 		sudo chmod a+w /mnt/disks/{folder-name}
+		```
 		
+		```bash
 		#example 
 		sudo chmod a+w /mnt/disks/scamp-singlecell
 	   ```
@@ -96,7 +106,9 @@ In this tutorial, I show how you can use the Terra notebook environments in a GC
    - We also need to set the appropriate permissions for our persistent disk prior to running the Terra docker so that when we enter the docker and mount our persistent disk the docker user can read/write to it. The idea is more fully explored in this [stackoverflow post](https://stackoverflow.com/questions/29245216/write-in-shared-volumes-docker). 
 		```bash
 		sudo chown -R 1000:100 /mnt/disks/{folder-name}
+		```
 		
+		```bash
 		#example
 		sudo chown -R 1000:100 /mnt/disks/scamp-singlecell
 		```
@@ -104,7 +116,9 @@ In this tutorial, I show how you can use the Terra notebook environments in a GC
    - Example command below using one of the cached Terra docker images. 
 		```bash
 		sudo docker run -e R_LIBS='/home/jupyter/packages' --rm -it -u jupyter -p 8080:8080 -v /mnt/disks/{folder-name}:/home/jupyter --entrypoint /bin/bash {terra-docker-image-path}
+		```
 		
+		```bash
 		#example
 		sudo docker run -e R_LIBS='/home/jupyter/packages' --rm -it -u jupyter -p 8080:8080 -v /mnt/disks/scamp-singlecell:/home/jupyter --entrypoint /bin/bash us.gcr.io/broad-dsp-gcr-public/terra-jupyter-bioconductor:2.1.11
 		```
@@ -129,7 +143,9 @@ In this tutorial, I show how you can use the Terra notebook environments in a GC
 	1. Make a complete copy of your Terra PD to a google bucket. The google bucket folder (here, `notebook-cache-{date}`) should *not* already exist in your bucket for everything to copy in the right directory structure. This folder will be automatically created by the `gsutil cp` process.  Navigate to the **Terra notebook associated terminal** and run the below command.
 		```bash
 		gsutil -m cp -r -L "terraPD_to_gbucket_{date}.log" /home/jupyter gs://{google-bucket}/notebook-cache-{date}
-	
+		```
+		
+		```bash
 		#example
 		e.g. gsutil -m cp -r -L "terraPD_to_gbucket_20230724.log" /home/jupyter gs://fc-3a463b92-98d9-47e3-9d16-4ba001069ee9/notebook-cache-20230724
 		```
@@ -144,7 +160,9 @@ In this tutorial, I show how you can use the Terra notebook environments in a GC
 		2. Copy Terra PD contents from google bucket to GCP PD
 			```bash
 			gsutil -m cp -r -L "gbucket_to_gcpPD_{date}.log" gs://{google-bucket}/notebook-cache-{date}/* /home/jupyter/
-	
+			```
+			
+		```bash
 			#example
 			gsutil -m cp -r -L "gbucket_to_gcpPD_20230724.log" gs://fc-3a463b92-98d9-47e3-9d16-4ba001069ee9/notebook-cache-20230724/* /home/jupyter/
 			```
@@ -314,7 +332,9 @@ Erica has several workspaces. I think she could have one PD per workspace, and m
 - To be able to use the `sudo` command, you have to enter the docker as the root user. Generally wouldn't recommend accessing the docker as the root user because of file/folder permissions weirdness later. 
 	```bash
 	sudo docker run -e R_LIBS='/home/jupyter/packages' --rm -it -u root -p 8080:8080 -v /mnt/disks/{folder-name}:/home/jupyter --entrypoint /bin/bash {terra-docker-image-path}
+	```
 	
+	```bash
 	#example
 	sudo docker run -e R_LIBS='/home/jupyter/packages' --rm -it -u root -p 8080:8080 -v /mnt/disks/scamp-singlecell:/home/jupyter --entrypoint /bin/bash us.gcr.io/broad-dsp-gcr-public/terra-jupyter-bioconductor:2.1.11
 	```
