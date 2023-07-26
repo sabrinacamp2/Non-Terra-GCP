@@ -23,7 +23,7 @@ IMO, a promising solution to the above is to strip away the Terra UI and noteboo
 			1. Here I've named mine `scamp-singlecell` to indicate which project's data will be stored here.
 			2. Consider creating a [snapshot schedule](#persistent-disk-snapshot-schedule) at this time for automatic data back up. 
 		3. In the `Advanced options` -> `Networking` -> `Network inferfaces` section, click on the drop down arrow. In the `External IPv4 address` section, choose the option to "reserve static external IP address". Note down the IP address, it will be used for navigating to your jupyter notebook in the browser (e.g., http://33.245.66.245:8080)
-		   - Note: Each static IP address costs money per hour. Navigate to `VPC network` -> `IP addresses` and release the static addresses not in use. [links](#creating-a-virtual-machine-and-persistent-disk)
+		   - Note: Each static IP address costs money per hour. Navigate to `VPC network` -> `IP addresses` and release the static addresses not in use. 
 1. SSH into the VM from your local terminal
 	1. Set your default google cloud project to be the one Brendan and Erin assigned to you using the following command: 
 		```bash
@@ -35,7 +35,7 @@ IMO, a promising solution to the above is to strip away the Terra UI and noteboo
 		gcloud config set project vanallen-scamp
 		```
 		   
-	2. SSH into the VM instance using the following command: 
+	2. SSH into the VM instance using the following command: <a name="ssh"></a>
 		```bash
 		gcloud compute ssh --zone "us-central1-a" "{instance-name}" --project "{project-id}"
 		```
@@ -61,7 +61,7 @@ IMO, a promising solution to the above is to strip away the Terra UI and noteboo
 		sudo mkfs.ext4 -m 0 -E lazy_itable_init=0,lazy_journal_init=0,discard /dev/disk/by-id/scsi-0Google_PersistentDisk_scamp-singlecell
 		```
 1. Mount the formatted and attached disk
-	1. Create a folder to mount the disk to (specific naming up to you)
+	1. Create a folder to mount the disk to (specific naming up to you) <a name=mount-folder </a>
 		```bash
 		sudo mkdir /mnt/disks
 		sudo mkdir /mnt/disks/{folder-name}
@@ -72,7 +72,7 @@ IMO, a promising solution to the above is to strip away the Terra UI and noteboo
 		sudo mkdir /mnt/disks
 		sudo mkdir /mnt/disks/scamp-singlecell
 		```
-	1. Mount disk to folder location
+	1. Mount disk to folder location <a name=mount </a>
 		```bash
 		sudo mount -o discard,defaults /dev/disk/by-id/{persistent-disk-name} /mnt/disks/{folder-name}
 		```
@@ -81,7 +81,7 @@ IMO, a promising solution to the above is to strip away the Terra UI and noteboo
 		#example
 		sudo mount -o discard,defaults /dev/disk/by-id/scsi-0Google_PersistentDisk_scamp-singlecell /mnt/disks/scamp-singlecell
 		```
-	1. Set read and write permissions for the disk
+	1. Set read and write permissions for the disk <a name="docker-read" </a>
 		```bash
 		sudo chmod a+w /mnt/disks/{folder-name}
 		```
@@ -227,19 +227,19 @@ In this tutorial, I show how you can use the Terra notebook environments in a GC
 	   - The address you are going to navigate to will be the following, replacing `external_ip_address` with yours. e.g. http://external_ip_address:8080/
 
 ## I stopped my VM and restarted it. What all do I have to do to get jupyter up and running again?
-1. SSH into VM from local terminal
-2. Mount persistent disk to VM
-3. Run Terra docker of choice
+1. [SSH into VM from local terminal](#ssh)
+2. [Mount persistent disk to VM](#mount)
+3. [Run Terra docker of choice](#terra-docker)
 4. Run jupyter notebook or jupyter lab
 	1. e.g. `jupyter notebook --no-browser --port=8080` or `jupyter-lab --no-browser --port=8080`
 
 ## I created a new VM (e.g., needed more memory). What all do I have to do to get jupyter up and running again? 
 1. Set external IP to static or select a static IP address you have already created in the GCP UI and note it down.
-2. SSH into VM from local terminal
-3. Create folder to mount persistent disk to
-4. Mount persistent disk to VM
-5. Allow docker user to read/write to PD
-6. Run Terra docker of choice
+2. [SSH into VM from local terminal](#ssh)
+3. [Create folder to mount persistent disk to](#mount-folder)
+4. [Mount persistent disk to VM](#mount)
+5. [Allow docker user to read/write to PD](#docker-read)
+6. [Run Terra docker of choice](#terra-docker)
 7. Run jupyter notebook or jupyter lab
 	1. e.g. `jupyter notebook --no-browser --port=8080` or `jupyter-lab --no-browser --port=8080`
 
