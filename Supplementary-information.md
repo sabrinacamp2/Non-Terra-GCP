@@ -89,5 +89,34 @@ Steps to how I created the boot disk image `terra-docker-image-100-boot-20230720
 	sudo docker run -e R_LIBS='/home/jupyter/packages' --rm -it -u root -p 8080:8080 -v /mnt/disks/scamp-singlecell:/home/jupyter --entrypoint /bin/bash us.gcr.io/broad-dsp-gcr-public/terra-jupyter-bioconductor:2.1.11
 	```
 
-## Known differences 
-- cant access PROJECT, WORKSPACE, etc environment variables
+## Using FISS to access Terra data tables
+
+First, you need to set up google cloud authorization to allow your code to read your google cloud credentials. This is different from [the previously mentioned google cloud authorization step](Introduction-to-GCP-VMs-and-using-Terra-notebook-environments.md#gcloudauth). The difference between `gcloud auth login` and `gcloud auth application-default login` talked about more in depth in [this stack overflow post](https://stackoverflow.com/questions/53306131/difference-between-gcloud-auth-application-default-login-and-gcloud-auth-logi).
+
+Once you are in the GCP VM and running your chosen Terra docker, type the below command in the terminal:
+
+```bash
+gcloud auth application-default login --no-browser
+```
+
+Copy the terminal output command that begins with `gcloud auth application-default login --remote-bootstrap=` into a separate terminal (e.g. the one on your local computer) and press enter. This should open up the web browser where you will log in with your broad google account and authorize. Then, copy the terminal output from your alternative/local terminal and paste it into the GCP VM terminal. This completes the authorization needed to allow your code to interact with your google cloud credentials. To validate that this process worked, check if the following file exists:  `/home/jupyter/.config/gcloud/application_default_credentials.json`. 
+
+Now that you are authenticated, you can use the [`FISS`](https://github.com/broadinstitute/fiss) python package to interact with the Terra data model. An example use case is below where I'm accessing the sample table from the `scATAC_matchedWES` workspace.
+
+```python
+from firecloud import fiss
+import io
+import pandas as pd
+
+project="vanallen-firecloud-nih"
+workspace="scATAC_matchedWES"
+bucket="fc-a4718cd6-cff4-49de-bb50-30f38691a1ab/"
+
+r = fiss.fapi.get_entities_tsv(project, workspace, 'sample')
+sample_table = pd.read_csv(io.BytesIO(r.content), encoding='utf-8', sep='\t') 
+
+```
+
+
+## To do
+- Clarify disk terminology

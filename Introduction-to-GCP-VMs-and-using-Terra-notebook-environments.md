@@ -23,7 +23,6 @@ IMO, a promising solution to the above is to strip away the Terra UI and noteboo
 			1. Here I've named mine `scamp-singlecell` to indicate which project's data will be stored here.
 			2. Consider creating a [snapshot schedule](Supplementary-information.md#persistent-disk-snapshot-schedule) at this time for automatic data back up. 
 		3. In the `Advanced options` -> `Networking` -> `Network inferfaces` section, click on the drop down arrow. In the `External IPv4 address` section, choose the option to "reserve static external IP address". Note down the IP address, it will be used for navigating to your jupyter notebook in the browser (e.g., http://33.245.66.245:8080)
-		   - Note: Each static IP address costs money per hour. Navigate to `VPC network` -> `IP addresses` and release the static addresses not in use. 
 1. SSH into the VM from your local terminal
 	1. Set your default google cloud project to be the one Brendan and Erin assigned to you using the following command: 
 		```bash
@@ -45,7 +44,7 @@ IMO, a promising solution to the above is to strip away the Terra UI and noteboo
 		gcloud compute ssh --zone "us-central1-a" "scamp-cpu-16" --project "vanallen-scamp"
 		```
 
-3. Format the attached persistent disk <br> ****You only have to do this once to a disk. It will wipe your disk clean if you do it again once you have data stored on it**
+3. Format the attached persistent disk <br> **You only have to do this once to a disk. It will wipe your disk clean if you do it again once you have data stored on it**
 	1. Find the name of the persistent disk you created using the following command: <br>
 	   ```bash
 	   ls /dev/disk/by-id/
@@ -129,7 +128,7 @@ In this tutorial, I show how you can use the Terra notebook environments in a GC
 	  docker system prune
 		```
 		I recommend this because the Terra docker images are huge, and if you will be utilizing other ones, the boot disk may quickly run out of space. Consider creating your own book disk image with the Terra docker images you will be using.
-1. Set up gcloud authentication.
+1. Set up gcloud authentication. <a name="gcloudauth"></a>
    - With newer versions of gcloud, it's no longer possible to authenticate on a machine that doesn't have a web browser (like the GCP VM). The new Instructions below for authenticating a machine without a web browser is from the [google cloud SDK documentation](https://cloud.google.com/sdk/docs/authorizing#auth-login) You _should_ only have to do this once, because the credentials are stored on the persistent disk and could be used with any VM. _I think?_
 		1. Once inside Terra docker, run the following command in the GCP VM:
 		   ```bash
@@ -166,7 +165,7 @@ In this tutorial, I show how you can use the Terra notebook environments in a GC
 		```bash
 			#example
 			gsutil -m cp -r -L "gbucket_to_gcpPD_20230724.log" gs://fc-3a463b92-98d9-47e3-9d16-4ba001069ee9/notebook-cache-20230724/* /home/jupyter/
-			```
+		```
 1. [Option one] Jupyter notebook
 	1. Create the jupyter notebook configuration and password. 
 	   - Loosely following [this tutorial](https://towardsdatascience.com/running-jupyter-notebook-in-google-cloud-platform-in-15-min-61e16da34d52). 
