@@ -15,3 +15,4 @@ This repository stores documentation for the steps required to use Terra noteboo
 	- Automatic shut-down of VM
 	- How the boot disk was created
 	- Using `sudo`
+	- Access Terra data table using `FISS` python package
