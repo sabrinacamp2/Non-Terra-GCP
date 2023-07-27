@@ -233,6 +233,20 @@ In this tutorial, I show how you can use the Terra notebook environments in a GC
 3. [Run Terra docker of choice](#terra-docker)
 4. Run jupyter notebook or jupyter lab
 	1. e.g. `jupyter notebook --no-browser` or `jupyter-lab --no-browser`
+<br>
+
+For example, copy this code chunk, replace with variables for your use case, and paste into your local terminal (it can be all at once!).
+```bash
+gcloud compute ssh --zone "us-central1-a" "{instance-name}" --project "{project-id}"
+
+sudo mount -o discard,defaults /dev/disk/by-id/{persistent-disk-name} /mnt/disks/{folder-name}
+
+sudo docker run -e R_LIBS='/home/jupyter/packages' --rm -it -u jupyter -p 8080:8080 -v /mnt/disks/{folder-name}:/home/jupyter --entrypoint /bin/bash {terra-docker-image-path}
+
+jupyter-lab --no-browser
+```
+
+<br>
 
 ## I created a new VM (e.g., needed more memory). What all do I have to do to get jupyter up and running again? 
 1. Set external IP to static or select a static IP address you have already created in the GCP UI and note it down.
@@ -243,3 +257,22 @@ In this tutorial, I show how you can use the Terra notebook environments in a GC
 6. [Run Terra docker of choice](#terra-docker)
 7. Run jupyter notebook or jupyter lab
 	1. e.g. `jupyter notebook --no-browser` or `jupyter-lab --no-browser`
+
+<br>
+
+For example, copy this code chunk, replace with variables for your use case, and paste into your local terminal (it can be all at once!).
+```bash
+gcloud compute ssh --zone "us-central1-a" "{instance-name}" --project "{project-id}"
+
+sudo mkdir /mnt/disks
+
+sudo mkdir /mnt/disks/{folder-name}
+
+sudo mount -o discard,defaults /dev/disk/by-id/{persistent-disk-name} /mnt/disks/{folder-name}
+
+sudo chown -R 1000:100 /mnt/disks/{folder-name}
+
+sudo docker run -e R_LIBS='/home/jupyter/packages' --rm -it -u jupyter -p 8080:8080 -v /mnt/disks/{folder-name}:/home/jupyter --entrypoint /bin/bash {terra-docker-image-path}
+
+jupyter-lab --no-browser
+```
