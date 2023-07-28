@@ -7,7 +7,9 @@ IMO, a promising solution to the above is to strip away the Terra UI and noteboo
 ## Creating a virtual machine and persistent disk
 1. Creating a VM instance and attaching a persistent disk through the GCP UI
 	1. Ask Brendan and Erin to create a google cloud project for you (e.g. `vanallen-scamp` is mine). You will receive an email to accept the project invitation where you will click the link provided. Then, the project should show up when you navigate to the [Google Cloud Console](https://console.cloud.google.com/ ) and log in. <br><br>   <img src="Attachments/mainpage.png" alt="mainpage" width = 70%)><br><br>
-	3. Navigate to `Compute Engine` -> `VM instances` tab. Select `Create an instance`. 
+	2. <a name="snapshot"></a> Create a schedule to automatically back-up your data. Navigate to `Snapshots`, then select the `Snapshot schedules` tab. An option at the top of the webpage should be `Create a snapshot schedule`, select that option. I have created a weekly backup, where backups 2+ weeks old will be deleted. You can customize this to your liking. <br><br>
+	   <img src="Attachments/snapshot_schedule.png" alt="snapshot" width = 70%)><br>
+	4. Navigate to `Compute Engine` -> `VM instances` tab. Select `Create an instance`. 
 		1. General lab guidelines for VM naming can be found in our [GCP Handbook - Non-Terra](https://docs.google.com/document/d/1QYqFy7rCAAmsRMfkMtYUPAHyM-FKONMHOq4nD4Tpji0/edit)
 			1. Here, I named mine `scamp-cpu-16` encoding that the VM is using CPUs not GPUs and has 16 GB of memory.
 		2. Set region to `us-central1 (Iowa)`
@@ -21,7 +23,7 @@ IMO, a promising solution to the above is to strip away the Terra UI and noteboo
 			These images are using R version 4.3.0 and Python version 3.7.12.<br><br> <img src="Attachments/bootdisk2.png" alt="bootdisk2" width = 70%)><br>
 		2. If you don't already have a persistent disk created, you can create and attach a disk at this time in the `Advanced options` section. These operate the same as Terra PDs, where if you delete the VM the persistent disk will remain. 
 			1. Here I've named mine `scamp-singlecell` to indicate which project's data will be stored here.
-			2. Consider creating a [snapshot schedule](Supplementary-information.md#persistent-disk-snapshot-schedule) at this time for automatic data back up. 
+			2. Select the [snapshot schedule](#snapshot) you created to create automatic back-ups for this disk.
 		3. In the `Advanced options` -> `Networking` -> `Network inferfaces` section, click on the drop down arrow. In the `External IPv4 address` section, choose the option to "reserve static external IP address". Note down the IP address, it will be used for navigating to your jupyter notebook in the browser (e.g., http://33.245.66.245:8080)
 1. SSH into the VM from your local terminal
 	1. Set your default google cloud project to be the one Brendan and Erin assigned to you using the following command: 
@@ -162,10 +164,10 @@ In this tutorial, I show how you can use the Terra notebook environments in a GC
 			gsutil -m cp -r -L "gbucket_to_gcpPD_{date}.log" gs://{google-bucket}/notebook-cache-{date}/* /home/jupyter/
 			```
 			
-		```bash
+			```bash
 			#example
 			gsutil -m cp -r -L "gbucket_to_gcpPD_20230724.log" gs://fc-3a463b92-98d9-47e3-9d16-4ba001069ee9/notebook-cache-20230724/* /home/jupyter/
-		```
+			```
 1. [Option one] Jupyter notebook
 	1. Create the jupyter notebook configuration and password. 
 	   - Loosely following [this tutorial](https://towardsdatascience.com/running-jupyter-notebook-in-google-cloud-platform-in-15-min-61e16da34d52). 

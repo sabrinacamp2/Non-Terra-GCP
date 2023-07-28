@@ -43,12 +43,6 @@ screen -ls | grep Detached | cut -d. -f1 | awk '{print $1}' | xargs kill
 
 ```
 
-## [Persistent disk snapshot schedule](https://cloud.google.com/compute/docs/disks/scheduled-snapshots#:~:text=In%20the%20Name%20column%2C%20click,schedule%2C%20choose%20Create%20a%20schedule.)
-
-Google cloud has a feature to regularly and automatically back up your persistent disks. You can create the snapshot schedule when you create the disk, or afterwards. 
-
-At the moment, I don't think we have any guidelines here. I think it's best practice to select to autodelete snapshots after a certain amount of time to minimize storage costs. Also, perhaps a weekly snapshot is a good combination of frequency and storage and/or copy costs? 
-
 ## Instance schedule 
 Terra had a nice feature of auto-pausing your VM when you weren't using it for >30 minutes. This feature allows us to reduce costs of VMs we forgot to shut off. 
 
@@ -117,6 +111,10 @@ sample_table = pd.read_csv(io.BytesIO(r.content), encoding='utf-8', sep='\t')
 
 ```
 
+## Common issues
+- Jupyter lab/notebook did not load in the browser
+	- Check for leading or trailing spaces in the lines you added to the jupyter config file. 
 
 ## To do
 - Clarify disk terminology
+- Instance schedule permissions
