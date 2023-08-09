@@ -43,17 +43,6 @@ screen -ls | grep Detached | cut -d. -f1 | awk '{print $1}' | xargs kill
 
 ```
 
-## Instance schedule 
-Terra had a nice feature of auto-pausing your VM when you weren't using it for >30 minutes. This feature allows us to reduce costs of VMs we forgot to shut off. 
-
-This auto-pausing feature isn't the default GCP VM behavior, and I haven't yet found Terra's documentation on how they do this. 
-
-However, google cloud does have what's called ["Instance schedules"](https://cloud.google.com/compute/docs/instances/schedule-instance-start-stop). Instance schedules allow you to program a start and/or stop time to a VM. Here, I am creating a schedule to stop my instance at 6PM daily in case I forget to shut it off myself.<br><br>
-<img src="Attachments/instanceschedule.png" alt="instanceschedule" width = 60% ><br>
-
-After creating the schedule, you can attach your VM to it. <img src="Attachments/instanceschedule_detailed.png" alt="instanceschedule_detailed" width = 70%)>
-
-If you are getting a permissions error, you may need to edit the IAM permissions. Talk to Sabrina
 ## How the boot disk image used in this tutorial was created
 Steps to how I created the boot disk image `terra-docker-image-100-boot-20230720`
 1. Install docker. 
@@ -114,7 +103,14 @@ sample_table = pd.read_csv(io.BytesIO(r.content), encoding='utf-8', sep='\t')
 ## Common issues
 - Jupyter lab/notebook did not load in the browser
 	- Check for leading or trailing spaces in the lines you added to the jupyter config file. 
+- Unable to mount persistent disk because it is attached to another VM instance. 
+		- Through the UI, edit the VM instance that has your disk attached. In the `Additional disks` section, detatch your disk. Once that is saved, edit the VM instance you are now using, navigate to the `Additional disks` section and attach your disk. 
 
 ## To do
 - Clarify disk terminology
-- Instance schedule permissions
+- Conda environment guidance
+- I have multiple workspaces w/ Terra notebooks -- what do I do? Temp draft of steps
+	- Create a persistent disk for each
+	- Copy over files from each into each
+	- attach/detatch to VM 
+- Add Laura's notes on PD mount/unmount attach/detach via command line
