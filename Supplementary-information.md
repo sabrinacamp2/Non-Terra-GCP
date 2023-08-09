@@ -104,7 +104,7 @@ sample_table = pd.read_csv(io.BytesIO(r.content), encoding='utf-8', sep='\t')
 - Jupyter lab/notebook did not load in the browser
 	- Check for leading or trailing spaces in the lines you added to the jupyter config file. 
 - Unable to mount persistent disk because it is attached to another VM instance. 
-		- Through the UI, edit the VM instance that has your disk attached. In the `Additional disks` section, detatch your disk. Once that is saved, edit the VM instance you are now using, navigate to the `Additional disks` section and attach your disk. 
+	- Through the UI, edit the VM instance that has your disk attached. In the `Additional disks` section, detatch your disk. Once that is saved, edit the VM instance you are now using, navigate to the `Additional disks` section and attach your disk. 
 
 ## To do
 - Clarify disk terminology
