@@ -8,7 +8,7 @@ This repository stores documentation for the steps required to use Terra noteboo
 	- Using a Terra notebook environment on the VM
 	- Transferring data from a Terra persistent disk to a non-Terra persistent disk
 	- Configuring jupyter notebook or jupyter lab
-	- Quick start sections to reference when resuming a VM or creating a new VM
+	- **Quick start sections** to reference when resuming a VM or creating a new VM
 - [Supplementary information.md](Supplementary-information.md)
 	- Conda environment and kernels
 	- Using `screen`
