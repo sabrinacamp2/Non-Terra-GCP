@@ -15,5 +15,6 @@ This repository stores documentation for the steps required to use Terra noteboo
 	- How the boot disk was created
 	- Using `sudo`
 	- Access Terra data table using `FISS` python package
+	- Accessing persistent disk in different VMs and resizing persistent disk
 	- Common issues
 	- Future documentation updates
