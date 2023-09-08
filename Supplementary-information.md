@@ -99,7 +99,47 @@ r = fiss.fapi.get_entities_tsv(project, workspace, 'sample')
 sample_table = pd.read_csv(io.BytesIO(r.content), encoding='utf-8', sep='\t') 
 
 ```
+## Using an existing persistent disk with multiple VMs
+A persistent disk can only be attached and used by one VM at a time. However, sometimes you want to go from using your persistent disk with "VM1" to using it with "VM2". There are two ways to go about doing this.
+1. You can do this from the GCP UI by first editing "VM1" and removing the disk from the `Additional disks` section. Save the edit, then edit "VM2" and select "Attach an existing disk" in the `Additional disks` section. Select the disk you removed from "VM1", save the edit, and then you can proceed [as usual to access the VM](Introduction-to-GCP-VMs-and-using-Terra-notebook-environments.md#quickstart).
+2. You can do this all from the CLI. S/O Laura Valderrábano for providing the code and comments for this,
+	1. Unmount the persistent disk. First you need to SSH into "VM1" where the disk is currently attached and unmount it.
+	   ```bash
+	   gcloud compute ssh --zone "us-central-a" "{instance-name}" --project "{project-id}"
 
+		sudo umount /dev/disk/by-id/{persistent-disk-name}
+		```
+
+		```bash
+		#example
+		gcloud compute ssh --zone "us-central1-a" "lvalderr-cpu-16" --project "vanallen-lvalderr"
+
+		sudo umount /dev/disk/by-id/scsi-0Google_PersistentDisk_lvalderr-singlecell
+		```
+
+	2. Detach the persistent disk from "VM1" in a new terminal window/tab.
+		```bash
+		gcloud compute instances detach-disk {instance-name} --disk=disk-name
+		```
+
+		```bash
+		gcloud compute instances detach-disk --zone "us-central1-a" "lvalderr-cpu-128" --disk=lvalderr-singlecell
+		```
+
+	3. Attach the disk to "VM2". In the same terminal window as above, attach the disk to "VM2" with read and write permissions.
+		```bash
+		gcloud compute instances attach-disk --zone "us-central1-a" "{instance-name}" --disk={disk-name} --mode=rw
+		```
+
+		```bash
+		#example
+		gcloud compute instances attach-disk --zone "us-central1-a" "lvalderr-cpu-128" --disk=lvalderr-singlecell --mode=rw
+		```
+
+	4. Follow [quickstart steps](Introduction-to-GCP-VMs-and-using-Terra-notebook-environments.md#quickstart) to access "VM2". The disk should now be accessible from "VM2".
+
+## Increase size of existing persistent disk
+- Follow steps from the [google cloud documentation](https://cloud.google.com/compute/docs/disks/resize-persistent-disk). This requires both increasing the size of the disk AND resizing the file system and partitions as a non-boot disk. Follow the steps for a linux VM. 
 ## Common issues
 - Jupyter lab/notebook did not load in the browser
 	- Check for leading or trailing spaces in the lines you added to the jupyter config file. 
@@ -113,4 +153,3 @@ sample_table = pd.read_csv(io.BytesIO(r.content), encoding='utf-8', sep='\t')
 	- Create a persistent disk for each
 	- Copy over files from each into each
 	- attach/detatch to VM 
-- Add Laura's notes on PD mount/unmount attach/detach via command line

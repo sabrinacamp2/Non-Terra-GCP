@@ -238,7 +238,7 @@ In this tutorial, I show how you can use the Terra notebook environments in a GC
 
 
 # Quick start
-## I stopped my VM and restarted it. What all do I have to do to get jupyter up and running again?
+## I stopped my VM and restarted it. What all do I have to do to get jupyter up and running again? <a name="quickstart"></a>
 1. [SSH into VM from local terminal](#ssh)
 2. [Mount persistent disk to VM](#mount)
 3. [Run Terra docker of choice](#terra-docker)
