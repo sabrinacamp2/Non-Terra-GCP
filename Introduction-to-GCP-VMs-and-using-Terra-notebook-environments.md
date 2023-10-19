@@ -16,7 +16,7 @@ IMO, a promising solution to the above is to strip away the Terra UI and noteboo
 		3. I've been keeping most options as the default. I've been choosing from the Standard machine types. <br> <br><img src="Attachments/machinetypes.png" alt="machinetypes" width = 60%)><br>
 		4. Modify the firewall rules.
 			1. Allow both HTTP and HTTPS traffic<br><br> <img src="Attachments/firewall.png" alt="firewall" width = 60%)><br>
-		5. Ask Sabrina to [give you access to her project](https://cloud.google.com/deployment-manager/docs/configuration/using-images-from-other-projects-for-vm-instances#console) and change the boot disk to be from the Custom Image named `terra-docker-image-100-boot-20230720`. This boot disk already has Docker installed and the following three Terra notebook environments are cached: 
+		5. Ask Sabrina to [give you access to her project](https://cloud.google.com/deployment-manager/docs/configuration/using-images-from-other-projects-for-vm-instances#console) and change the boot disk to be from the Custom Image named `terra-docker-image-100-boot-20230720`. To be able to see this image, you have to select `vanallen-scamp` under the "Source projects for images" section. This boot disk already has Docker installed and the following three Terra notebook environments are cached: 
 		   - **R/Bioconductor**: us.gcr.io/broad-dsp-gcr-public/terra-jupyter-bioconductor:2.1.11
 		   - **Python**: us.gcr.io/broad-dsp-gcr-public/terra-jupyter-python:1.0.15
 		   - **Default**: us.gcr.io/broad-dsp-gcr-public/terra-jupyter-gatk:2.2.14
