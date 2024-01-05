@@ -2,12 +2,6 @@
 # Supplementary information
 
 ## Conda environment and kernels
-By default, conda environments are placed in `/opt/conda/envs`. As I mentioned earlier, only files in `/home/jupyter` will be saved to the persistent disk, so by default the created conda environments **would be lost** if you created a new VM. 
-
-To keep your conda environments, edit the conda configuration to save the environments to a location that is on the persistent disk. 
-```bash
-conda config --append envs_dirs /home/jupyter/envs
-```
 
 We can also use different conda environments within a Jupyter notebook using kernels. S/O Erica Pimenta for providing some insight into this. The main idea is that if you want to use a conda environment with a jupyter notebook, you need to have `ipykernel` installed in the environment. If you want the R kernel, you would need to have `r-irkernel` installed in the environment. For example, the below command would create an environment and associated python kernel for the `scanpy_env`. You could then use the `scanpy_env` python kernel and associated packages in a jupyter notebook.
 ```bash
@@ -59,6 +53,33 @@ Steps to how I created the boot disk image `terra-docker-image-100-boot-20230720
 	1. R/Bioconductor: us.gcr.io/broad-dsp-gcr-public/terra-jupyter-bioconductor:2.1.11
 	2. Python: us.gcr.io/broad-dsp-gcr-public/terra-jupyter-python:1.0.15
 	3. Default: us.gcr.io/broad-dsp-gcr-public/terra-jupyter-gatk:2.2.14
+
+## Create a boot disk image with different notebook environments<a name="newboot"></a>
+1. [SSH into your VM](Introduction-to-GCP-VMs-and-using-Terra-notebook-environments.md#ssh) that was created with the tutorial book disk image `terra-docker-image-100-boot-20230720`
+1. List out currently cached docker images 
+	``` bash
+	sudo docker images
+	```
+	1. If you want to remove all cached images
+		``` bash
+		sudo docker system prune -a
+		```
+	1. If you want to remove a specific image,
+		``` bash
+		docker rmi {image-id}
+		```
+1. Pull the docker images you want
+	``` bash
+	docker pull us.gcr.io/broad-dsp-gcr-public/terra-jupyter-bioconductor:2.2.4
+	```
+1. Stop the VM instance
+2. Go to the disks tab in the UI, find the boot disk associated with the VM you were SSH'd into, and select the three dot button to the far right
+3. Select create image, fill out sections making sure the location is regional, and create it. 
+4. Go to VM(s) you've created where you want to use these different notebook environments and click Edit. 
+5. Select detatch boot disk, then select configure boot disk. 
+6. Select the custom images tab, change source project to your own, and select the disk image you just created. 
+7. Save changes
+Next time [you spin up this VM](Introduction-to-GCP-VMs-and-using-Terra-notebook-environments.md#quickstart), you will be able to use these different notebook environments by editing the `{terra-docker-image-path}` to one that you pulled. 
 
 
 ## Sudo access on docker

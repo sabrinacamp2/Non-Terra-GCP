@@ -20,6 +20,7 @@ IMO, a promising solution to the above is to strip away the Terra UI and noteboo
 		   - **R/Bioconductor**: us.gcr.io/broad-dsp-gcr-public/terra-jupyter-bioconductor:2.1.11
 		   - **Python**: us.gcr.io/broad-dsp-gcr-public/terra-jupyter-python:1.0.15
 		   - **Default**: us.gcr.io/broad-dsp-gcr-public/terra-jupyter-gatk:2.2.14
+		   
 			These images are using R version 4.3.0 and Python version 3.7.12.<br><br> <img src="Attachments/bootdisk2.png" alt="bootdisk2" width = 70%)><br>
 		2. If you don't already have a persistent disk created, you can create and attach a disk at this time in the `Advanced options` section. These operate the same as Terra PDs, where if you delete the VM the persistent disk will remain. 
 			1. Here I've named mine `scamp-singlecell` to indicate which project's data will be stored here.
@@ -133,11 +134,7 @@ In this tutorial, I show how you can use the Terra notebook environments in a GC
 		sudo docker run -e R_LIBS='/home/jupyter/packages' --rm -it -u jupyter -p 8080:8080 -v /mnt/disks/scamp-singlecell:/home/jupyter --entrypoint /bin/bash us.gcr.io/broad-dsp-gcr-public/terra-jupyter-bioconductor:2.1.11
 		```
 	- To explain some of this command, we are specifying that we want to interactively run the docker container as the non-root `jupyter` user (this is how its done in Terra notebooks). We specify to place user-installed R packages into the `/home/jupyter/packages` location. We perform port mapping `8080:8080` so that we can access the services running inside the docker (when we connect to a jupyter notebook via the browser). So far, only the `8080` port has worked, not sure why. We are mounting our persistent disk to the `/home/jupyer` location inside of the docker. This means when you are inside of the docker, ONLY the things saved in the `/home/jupyter` path will be saved to the persistent disk. Everything else will not be saved. When you exit the docker, navigate to `/mnt/disks/{folder-name}` to access what you put in `/home/jupyter` when you were inside of the docker. 
-	- Terra docker images not cached on the boot disk (those cached listed [here](Supplementary-information.md#How-the-boot-disk-image-used-in-this-tutorial-was-created)) **can still be used here**, but the `docker run` command will take significantly longer. This is because it is pulling the docker from scratch. If you don't plan on using any of the cached images, I would recommend clearing the cache using the following command:
-	  ```bash
-	  docker system prune
-		```
-		I recommend this because the Terra docker images are huge, and if you will be utilizing other ones, the boot disk may quickly run out of space. Consider creating your own book disk image with the Terra docker images you will be using.
+	- Terra docker images not cached on the boot disk (those cached listed [here](Supplementary-information.md#How-the-boot-disk-image-used-in-this-tutorial-was-created)) **can still be used here**, but the `docker run` command will take significantly longer. This is because it is pulling the docker from scratch. If you don't plan on using any of the cached images, I would recommend creating a new boot disk image to use with your VMs that have the environments you want, instructions [here](Supplementary-information.md#newboot)
 1. Set up gcloud authentication. <a name="gcloudauth"></a>
    - With newer versions of gcloud, it's no longer possible to authenticate on a machine that doesn't have a web browser (like the GCP VM). The new Instructions below for authenticating a machine without a web browser is from the [google cloud SDK documentation](https://cloud.google.com/sdk/docs/authorizing#auth-login) You _should_ only have to do this once, because the credentials are stored on the persistent disk and could be used with any VM. _I think?_
 		1. Once inside Terra docker, run the following command in the GCP VM:
@@ -160,7 +157,7 @@ In this tutorial, I show how you can use the Terra notebook environments in a GC
 		e.g. gsutil -m cp -r -L "terraPD_to_gbucket_20230724.log" /home/jupyter gs://fc-3a463b92-98d9-47e3-9d16-4ba001069ee9/notebook-cache-20230724
 		```
 		
-		- This will not copy over conda environments unless you had the conda config set to save in a `/home/jupyter` directory. (sorry) Consider exporting environments to .yml files for easy rebuild on GCP VM. 
+		- This will not copy over conda environments. Consider exporting environments to .yml files for easy rebuild on GCP VM. 
 		- [Optional] Check if any files were not successfully transferred by inspecting `filtered_output.csv`
 		  ```bash
 		  grep -v "OK" terraPD_to_gbucket_{date}.log > filtered_output.csv
@@ -177,36 +174,12 @@ In this tutorial, I show how you can use the Terra notebook environments in a GC
 			gsutil -m cp -r -L "gbucket_to_gcpPD_20230724.log" gs://fc-3a463b92-98d9-47e3-9d16-4ba001069ee9/notebook-cache-20230724/* /home/jupyter/
 			```
 	2. Repeat [google cloud authorization steps](#gcloudauth). We have seen that config files transferred from the Terra PD break the authorization we just set up.
-1. [Option one] Jupyter notebook
-	1. Create the jupyter notebook configuration and password. 
-	   - Loosely following [this tutorial](https://towardsdatascience.com/running-jupyter-notebook-in-google-cloud-platform-in-15-min-61e16da34d52). 
-		   ```bash
-		   jupyter notebook --generate-config
-		   # set password
-		   jupyter notebook password
-			```
-	1. Edit jupyter notebook configuration to let us run the notebook in our browser.
-	   - Use whatever text editor you want. Example below. 
-		   ```bash
-		   vim /home/jupyter/.jupyter/jupyter_notebook_config.py
-			```
-		- Paste the following lines to the top of the file and save. 
-			```
-			c = get_config()
-			c.NotebookApp.ip = '0.0.0.0'
-			c.NotebookApp.open_browser = False
-			c.NotebookApp.port = 8080
-			```
-		
-			<img src="Attachments/jupyterconfig.png" alt="jupyterconfig" width = 70%)>
-	1. Run jupyter notebook.
-	   - Below command.
-		   ```bash
-		   jupyter notebook --no-browser
-			```
-	1. Navigate to the jupyter notebook in your browser of choice. 
-	   - The address you are going to navigate to will be the following, replacing `external_ip_address` with yours from step 2. e.g. http://external_ip_address:8080/notebooks
-1. [Option two, Sabrina preferred] Jupyter lab
+1. Conda environments
+	1. By default, conda environments are placed in `/opt/conda/envs`. As I mentioned earlier, only files in `/home/jupyter` will be saved to the persistent disk, so by default the created conda environments **would be lost** if you created a new VM. To keep your conda environments, edit the conda configuration to save the environments to a location that is on the persistent disk. 
+		```bash
+		conda config --append envs_dirs /home/jupyter/envs
+		```
+1. [Option one, Sabrina preferred] Jupyter lab
 	1. Create the jupyter lab configuration and password. 
 	   - See below.
 		   ```bash
@@ -235,6 +208,36 @@ In this tutorial, I show how you can use the Terra notebook environments in a GC
 			```
 	1. Navigate to jupyter lab in your browser of choice. 
 	   - The address you are going to navigate to will be the following, replacing `external_ip_address` with yours. e.g. http://external_ip_address:8080/
+	   
+1. [Option two] Jupyter notebook
+	1. Create the jupyter notebook configuration and password. 
+	   - Loosely following [this tutorial](https://towardsdatascience.com/running-jupyter-notebook-in-google-cloud-platform-in-15-min-61e16da34d52). 
+		   ```bash
+		   jupyter notebook --generate-config
+		   # set password
+		   jupyter notebook password
+			```
+	1. Edit jupyter notebook configuration to let us run the notebook in our browser.
+	   - Use whatever text editor you want. Example below. 
+		   ```bash
+		   vim /home/jupyter/.jupyter/jupyter_notebook_config.py
+			```
+		- Paste the following lines to the top of the file and save. 
+			```
+			c = get_config()
+			c.NotebookApp.ip = '0.0.0.0'
+			c.NotebookApp.open_browser = False
+			c.NotebookApp.port = 8080
+			```
+		
+			<img src="Attachments/jupyterconfig.png" alt="jupyterconfig" width = 70%)>
+	1. Run jupyter notebook.
+	   - Below command.
+		   ```bash
+		   jupyter notebook --no-browser
+			```
+	1. Navigate to the jupyter notebook in your browser of choice. 
+	   - The address you are going to navigate to will be the following, replacing `external_ip_address` with yours from step 2. e.g. http://external_ip_address:8080/notebooks
 
 
 # Quick start
