@@ -194,7 +194,7 @@ In this tutorial, I show how you can use the Terra notebook environments in a GC
 		   ```bash
 		   vim /home/jupyter/.jupyter/jupyter_lab_config.py
 			```
-		- Paste the following lines to the top of the file and save. 
+		- Carefully copy the below lines to the top of the config file. We have seen issues with copy + pasting before, so proceed with caution! If you get nervous that you have messed up the config file beyond repair (unlikely), you can regenerate the file via `jupyter-lab --generate-config` and try to edit it again. 
 			```
 			c = get_config()
 			c.NotebookApp.ip = '0.0.0.0'
