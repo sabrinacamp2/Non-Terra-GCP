@@ -161,6 +161,18 @@ A persistent disk can only be attached and used by one VM at a time. However, so
 
 ## Increase size of existing persistent disk
 - Follow steps from the [google cloud documentation](https://cloud.google.com/compute/docs/disks/resize-persistent-disk). This requires both increasing the size of the disk AND resizing the file system and partitions as a non-boot disk. Follow the steps for a linux VM. 
+
+## Restore data from snapshot
+Did you mess up beyond belief and now you want to re-create your disk from a snapshot/ backup? It's ok! 
+
+Follow [these](https://cloud.google.com/compute/docs/disks/restore-snapshot) steps to create a new persistent disk based on a snapshot. Then, you can navigate in the console to the VM you want to use this disk with, scroll down to the Additional disks section, remove any attached disks, and attach your newly created disk. 
+
+SSH into the above VM, and find out what this new persistent disk name is. 
+```bash
+ls /dev/disk/by-id/
+```
+
+Now, follow the second part of the [quickstart steps](Introduction-to-GCP-VMs-and-using-Terra-notebook-environments.md#quickstart) - "I created a new VM (e.g., needed more memory). What all do I have to do to get jupyter up and running again?" being sure to fill in your new folder and disk name. You should be good to go now! When you are comfortable, I would recommend deleting your old disk so we don't pay for extra storage.
 ## Common issues
 - Jupyter lab/notebook did not load in the browser
 	- Check for leading or trailing spaces in the lines you added to the jupyter config file. 
