@@ -1,11 +1,13 @@
+# Accessing GCP VMs (and relatedly, Jupyter notebooks) in a more secure way
+
 ### What's the problem?
 - **SSH access**: When setting the externally accessible IP ranges on our GCP VMs, we specify which public IP addresses are allowed to _attempt_ to connect to the VM. Currently, we allow all public IPs to _attempt_ to connect. While SSH access requires both a valid SSH key and a Google account, allowing any public IP to attempt access increases the risk of brute-force attacks, where attackers try to guess your credentials.
 
-- **Jupyter access**: If someone guesses your external IP, port (`external_ip:8080`), and jupyter notebook password/token, they could potentially access your Jupyter server and its data.
+- **Jupyter access**: If someone guesses your VM's external IP, port (`external_ip:8080`), and jupyter notebook password/token, they could potentially access your Jupyter server and its data.
 
 ### Options
 To reduce risk, you have a few options:
-- **(This tutorial) Encrypted Tunnel for VM Access and port forwarding**: Connect to the VM via an encrypted tunnel ([IAP tunneling](https://cloud.google.com/iap/docs/using-tcp-forwarding)) and forward the Jupyter server port to your local machine.
+- **(This tutorial) Encrypted tunnel for VM access and port forwarding**: Connect to the VM via an encrypted tunnel ([IAP tunneling](https://cloud.google.com/iap/docs/using-tcp-forwarding)) and forward the Jupyter server port to your local machine.
   - **Advantages**:
     - The VM is not exposed to the public internet; access is through Google's infrastructure only.
     - The Jupyter server is not directly accessible via the web. 
@@ -13,7 +15,7 @@ To reduce risk, you have a few options:
 	- Note: This method does not protect the Jupyter server if someone guesses the VM's external IP, port, and Jupyter credentials.
 
 ### Steps:
-1. Set Up SSH tunneling and port forwarding:
+1. Set up SSH tunneling and port forwarding:
    ```bash
    gcloud compute ssh --zone "us-central1-a" "{instance-name}" --project "{project-id}" --tunnel-through-iap -- -N -f -L 8080:localhost:8080
    ```
