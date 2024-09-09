@@ -35,8 +35,8 @@ To reduce risk, you have a few options:
 3. Remove the VM’s external IP address:
     
     - Navigate to **VM Instances** -> Select your VM -> Click **Edit** -> Go to **Network Interfaces** -> Click the dropdown next to **Default** -> Click the dropdown next to **External IPv4 Address** -> Select **None** and save changes.<br><br>
-	   <img src="Attachments/remove_external.png" alt="remove_external" width = 70%)><br>
+	   <img src="../Attachments/remove_external.png" alt="remove_external" width = 70%)><br>
 4. Remove the jupyter firewall rule:
     
     - Navigate to **VPC Network** -> **Firewall Policies** -> Delete any rule you created when following the documentation that allowed all source IP ranges and port 8080.<br><br>
-	   <img src="Attachments/delete_jupyter.png" alt="delete_jupyter" width = 70%)><br>
+	   <img src="../Attachments/delete_jupyter.png" alt="delete_jupyter" width = 70%)><br>
