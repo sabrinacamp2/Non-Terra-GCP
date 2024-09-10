@@ -28,7 +28,7 @@ To reduce risk, you have a few options:
 	
 	sudo docker run -e R_LIBS='/home/jupyter/packages' --rm -it -u jupyter -p 8080:8080 -v /mnt/disks/{folder-name}:/home/jupyter --entrypoint /bin/bash {terra-docker-image-path}
 	
-	jupyter-lab --no-browser
+	jupyter-lab --no-browser --port=8080
 	
 	```
 3. Access the notebook:
