@@ -19,7 +19,11 @@ To reduce risk, you have a few options:
 	```
 1. In the screen, SSH into the VM adding flags for the tunnel and port forwarding:
    ```bash
-   gcloud compute ssh --zone "us-central1-a" "{instance-name}" --project "{project-id}" --tunnel-through-iap -- -L 8080:localhost:8080
+   gcloud compute ssh --zone "us-central1-a" \
+   "{instance-name}" \
+   --project "{project-id}" \
+   --tunnel-through-iap \
+   -- -L 8080:localhost:8080
    ```
 
 2. If you set up this VM using the [Non-Terra GCP documentation](../Introduction-to-GCP-VMs-and-using-Terra-notebook-environments.md), follow the remaining [quickstart steps](../Introduction-to-GCP-VMs-and-using-Terra-notebook-environments.md#quickstart) below to get your notebooks up and running:
@@ -71,7 +75,11 @@ To reduce risk, you have a few options:
 		# on your local terminal, reconnect to screen where port forwarding command was run
 		screen -r port_forwarding
 		# if you see broken pipe or some other error, re-establish connection and port forwarding
-		gcloud compute ssh --zone "us-central1-a" "{instance-name}" --project "{project-id}" --tunnel-through-iap -- -L 8080:localhost:8080
+		gcloud compute ssh --zone "us-central1-a" \
+		"{instance-name}" \
+		--project "{project-id}" \
+		--tunnel-through-iap \
+		-- -L 8080:localhost:8080
 		# re-load localhost:8080 in browser, should be where you left off when connection broke
 		```
 
