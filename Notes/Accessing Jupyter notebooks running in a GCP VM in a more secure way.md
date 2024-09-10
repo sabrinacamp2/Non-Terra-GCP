@@ -1,15 +1,15 @@
 # Accessing Jupyter notebooks running in a GCP VM in a more secure way
 
 ### What's the problem?
-- The way we access our jupyter notebooks running in the VM is by navigating to the VM's associated external IP address and the port number (e.g. 8080) that we created a firewall rule to allow access to. When creating this firewall rule, we specified that _any public IP address_ can connect to `external_ip:8080`. **Allowing any public IP to access increases the risk of brute-force attacks, where attackers try to guess your credentials (jupyter notebook password or token).**
-	- Note: port 8080 and 5000 are standard, so it would be easy for someone to guess your port.
+- The way we access our Jupyter notebooks running in the VM is by navigating to the VM's associated external IP address and the port number (e.g. `external_ip:8080`). We created a firewall rule to allow access to this port. When setting up this firewall rule, we allowed _any public IP address_ can connect to `external_ip:8080`. **Allowing any public IP to access the port increases the risk of brute-force attacks, where attackers might try to guess your credentials (Jupyter notebook password or token).**
+	- Note: Ports like 8080 and 5000 are commonly used for web applications, making it easier for someone to guess the port and potentially access the notebook.
 ### Options
 To reduce risk, you have a few options:
-- **(This tutorial) Do not have an external IP associated with your VM**: Connect to the VM via an encrypted tunnel ([IAP tunneling](https://cloud.google.com/iap/docs/using-tcp-forwarding)) and forward the Jupyter server port to your _local machine_.
+- **(This tutorial) Do not associate an external IP with your VM**: Instead, connect to the VM via an encrypted tunnel ([IAP tunneling](https://cloud.google.com/iap/docs/using-tcp-forwarding)) and forward the Jupyter server port to your _local machine_.
   - **Advantages**:
     - The VM is not exposed to the public internet; access is through Google's infrastructure only.
     - The Jupyter server is not directly accessible via the web at all. 
-- **(Not covered here) Limit externally accessible IP ranges**: Restrict access to your VM's port by specifying trusted IP addresses (e.g., home network, office network). Only these IPs can access the port that your notebook is running on.
+- **(Not covered here) Limit externally accessible IP ranges**: If you do use an external IP, restrict access to your VM’s ports by specifying trusted IP addresses (e.g., home network, office network). Only these IPs will be able to access the port on which your notebook is running.
 	- [ML GROUPS DOCS ON THIS?]
 
 ### How to connect:
@@ -64,17 +64,16 @@ To reduce risk, you have a few options:
 
 
 ### When things go wrong
-- All of the sudden you can't load your notebook.<br><br>
+- **Suddenly, you can't load your notebook**<br><br>
 	   <img src="../Attachments/connection_error.png" alt="connection_error" width = 70%)><br>
-	- This can mean that your ssh command (running in the `port_forwarding` screen gets interrupted, so the port stops being forwarded to your local computer. We can re-establish the connection and port forwarding, which will resume your access to the notebook. 
+	- This often means your ssh command (running in the `port_forwarding` screen) was interrupted, causing the forwarding of the VM's port 8080 to your local computer's port 8080 to stop. However, the Jupyter notebook process itself is still running. To resume access:
 		```bash
-		# on your local terminal, reconnect to screen
-		# where port forwarding command was run
+		# on your local terminal, reconnect to screen where port forwarding command was run
 		screen -r port_forwarding
-		# if you see broken pipe or some other error...
-		# re-establish connection and port forwarding
+		# if you see broken pipe or some other error, re-establish connection and port forwarding
 		gcloud compute ssh --zone "us-central1-a" "{instance-name}" --project "{project-id}" --tunnel-through-iap -- -L 8080:localhost:8080
 		# re-load localhost:8080 in browser, should be where you left off when connection broke
 		```
 
-- Error about the port already being used when running the docker command or when running the jupyter command. This happens when there is a process running in that port that isnt fully shut down. Restarting the VM should remedy the issue. 
+- **Error: "Port already in use" when running the Docker or Jupyter command**:  
+	- This happens when the port is still occupied by a process that wasn't fully shut down. Restarting the VM should resolve the issue.
