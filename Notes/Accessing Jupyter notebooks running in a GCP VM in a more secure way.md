@@ -1,7 +1,8 @@
 # Accessing Jupyter notebooks running in a GCP VM in a more secure way
 
 ### TL;DR
-[These are your new quickstart steps](#revised-quickstart) (assuming you set up your GCP VM following the Non-Terra GCP documentation). [Remove unsafe settings.](#unsafe-settings) 
+- If you set up your VM using the docs in this repository, [these are your new quickstart steps](#revised-quickstart).
+- [Remove unsafe settings.](#unsafe-settings) 
 ### What's the problem?
 - The way we access our Jupyter notebooks running in the VM is by navigating to the VM's associated external IP address and the port number (e.g. `external_ip:8080`). We created a firewall rule to allow access to this port. When setting up this firewall rule, we allowed _any public IP address_ can connect to `external_ip:8080`. **Allowing any public IP to access the port increases the risk of brute-force attacks, where attackers might try to guess your credentials (Jupyter notebook password or token).**
 	- Note: Ports like 8080 and 5000 are commonly used for web applications, making it easier for someone to guess the port and potentially access the notebook.
@@ -15,7 +16,7 @@ To reduce risk, you have a few options:
 	- Create a firewall rule to do this. 
 
 ### Revised quickstart steps:<a name="revised-quickstart"></a>
-If you set up this VM using the [Non-Terra GCP documentation](../Introduction-to-GCP-VMs-and-using-Terra-notebook-environments.md), these will be your new quickstart steps:
+If you set up this VM using the [Introduction-to-GCP-VMs-and-using-Terra-notebook-environments](../Introduction-to-GCP-VMs-and-using-Terra-notebook-environments.md) doc in this repository, these will be your new quickstart steps:
 ```bash
 # start screen on local machine to keep port forwarding
 screen -S port_forwarding
