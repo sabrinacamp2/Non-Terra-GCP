@@ -1,5 +1,7 @@
 # Accessing Jupyter notebooks running in a GCP VM in a more secure way
 
+### TL;DR
+[These are your new quickstart steps](#revised-quickstart) (assuming you set up your GCP VM following the Non-Terra GCP documentation). [Remove unsafe settings.](#unsafe-settings) 
 ### What's the problem?
 - The way we access our Jupyter notebooks running in the VM is by navigating to the VM's associated external IP address and the port number (e.g. `external_ip:8080`). We created a firewall rule to allow access to this port. When setting up this firewall rule, we allowed _any public IP address_ can connect to `external_ip:8080`. **Allowing any public IP to access the port increases the risk of brute-force attacks, where attackers might try to guess your credentials (Jupyter notebook password or token).**
 	- Note: Ports like 8080 and 5000 are commonly used for web applications, making it easier for someone to guess the port and potentially access the notebook.
@@ -12,7 +14,7 @@ To reduce risk, you have a few options:
 - **(Not covered here) Limit externally accessible IP ranges**: If you do use an external IP, restrict access to your VM’s ports by specifying trusted IP addresses (e.g., home network, office network). Only these IPs will be able to access the port on which your notebook is running.
 	- Create a firewall rule to do this. 
 
-### Revised quickstart steps:
+### Revised quickstart steps:<a name="revised-quickstart"></a>
 If you set up this VM using the [Non-Terra GCP documentation](../Introduction-to-GCP-VMs-and-using-Terra-notebook-environments.md), these will be your new quickstart steps:
 ```bash
 # start screen on local machine to keep port forwarding
@@ -51,7 +53,7 @@ jupyter-lab --no-browser --port=8080
    -- -L 8080:localhost:8080
    ```
 
-2. If you set up this VM using the [Non-Terra GCP documentation](../Introduction-to-GCP-VMs-and-using-Terra-notebook-environments.md), follow the remaining [quickstart steps](../Introduction-to-GCP-VMs-and-using-Terra-notebook-environments.md#quickstart) below to get your notebooks up and running:
+2. If you set up this VM using the [Non-Terra GCP documentation](../Introduction-to-GCP-VMs-and-using-Terra-notebook-environments.md), we would follow the usual remaining [quickstart steps](../Introduction-to-GCP-VMs-and-using-Terra-notebook-environments.md#quickstart) to get your notebooks up and running:
 	```bash
 	# start screen on VM
 	screen -S jupyter_notebook
@@ -79,7 +81,7 @@ jupyter-lab --no-browser --port=8080
 
 
 
-### Remove not safe settings
+### Remove not safe settings<a name="unsafe-settings"></a>
 
 1. Remove the VM’s external IP address:
     
