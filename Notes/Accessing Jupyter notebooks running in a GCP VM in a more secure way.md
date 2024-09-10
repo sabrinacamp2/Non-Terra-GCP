@@ -12,7 +12,32 @@ To reduce risk, you have a few options:
 - **(Not covered here) Limit externally accessible IP ranges**: If you do use an external IP, restrict access to your VM’s ports by specifying trusted IP addresses (e.g., home network, office network). Only these IPs will be able to access the port on which your notebook is running.
 	- Create a firewall rule to do this. 
 
-### How to connect:
+### Revised quickstart steps:
+If you set up this VM using the [Non-Terra GCP documentation](../Introduction-to-GCP-VMs-and-using-Terra-notebook-environments.md), these will be your new quickstart steps:
+```bash
+# start screen on local machine to keep port forwarding
+screen -S port_forwarding
+
+# SSH into VM, adding flags for IAP tunnel and port forwarding
+gcloud compute ssh --zone "us-central1-a" \
+"{instance-name}" \
+--project "{project-id}" \
+--tunnel-through-iap \
+-- -L 8080:localhost:8080
+
+# start screen on VM for your jupyter notebook process
+screen -S jupyter_notebook
+
+# mount persistent disk
+sudo mount -o discard,defaults /dev/disk/by-id/{persistent-disk-name} /mnt/disks/{folder-name}
+
+# start up terra notebook environment and jupyter notebook
+sudo docker run -e R_LIBS='/home/jupyter/packages' --rm -it -u jupyter -p 8080:8080 -v /mnt/disks/{folder-name}:/home/jupyter --entrypoint /bin/bash {terra-docker-image-path}
+
+jupyter-lab --no-browser --port=8080
+```
+
+#### Quickstart steps, explained:
 1. Start a screen on your local machine so that the ssh and port forwarding continues even if your terminal closed
 	```bash
 	screen -S port_forwarding
