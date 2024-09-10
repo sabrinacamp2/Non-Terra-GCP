@@ -15,9 +15,13 @@ To reduce risk, you have a few options:
 	- Note: This method does not protect the Jupyter server if someone guesses the VM's external IP, port, and Jupyter credentials.
 
 ### Steps:
-1. Set up SSH tunneling and port forwarding:
+1. Start a screen on your local machine, so that the ssh and port forwarding continues even if your terminal closed
+	```bash
+	screen -S port_forwarding
+	```
+1. SSH into the VM, adding flags for the tunnel and port forwarding:
    ```bash
-   gcloud compute ssh --zone "us-central1-a" "{instance-name}" --project "{project-id}" --tunnel-through-iap -- -N -f -L 8080:localhost:8080
+   gcloud compute ssh --zone "us-central1-a" "{instance-name}" --project "{project-id}" --tunnel-through-iap -- -L 8080:localhost:8080
    ```
 
 2. Follow the remaining [quickstart steps](../Introduction-to-GCP-VMs-and-using-Terra-notebook-environments.md#quickstart), same as usual:
@@ -34,7 +38,12 @@ To reduce risk, you have a few options:
 3. Access the notebook:
     
     - Open your browser and go to `localhost:8080` instead of using the VM’s external IP.
-3. Remove the VM’s external IP address:
+2. If you want to close your terminal and keep the process running, detach from the screen
+	```
+	press CTRL + A
+	press CTRL + D
+	```
+1. Remove the VM’s external IP address:
     
     - Navigate to **VM Instances** -> Select your VM -> Click **Edit** -> Go to **Network Interfaces** -> Click the dropdown next to **Default** -> Click the dropdown next to **External IPv4 Address** -> Select **None** and save changes.<br><br>
 	   <img src="../Attachments/remove_external.png" alt="remove_external" width = 70%)><br>
