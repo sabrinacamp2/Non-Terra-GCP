@@ -10,7 +10,7 @@ To reduce risk, you have a few options:
     - The VM is not exposed to the public internet; access is through Google's infrastructure only.
     - The Jupyter server is not directly accessible via the web at all. 
 - **(Not covered here) Limit externally accessible IP ranges**: If you do use an external IP, restrict access to your VM’s ports by specifying trusted IP addresses (e.g., home network, office network). Only these IPs will be able to access the port on which your notebook is running.
-	- [ML GROUPS DOCS ON THIS?]
+	- Create a firewall rule to do this. 
 
 ### How to connect:
 1. Start a screen on your local machine so that the ssh and port forwarding continues even if your terminal closed
