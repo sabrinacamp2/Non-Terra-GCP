@@ -8,21 +8,9 @@ We can also use different conda environments within a Jupyter notebook using ker
 conda create --name scanpy_env scanpy ipykernel
 ```
 
-## Keep process on VM running when you shut computer/ lose wifi/ close terminal
-To keep a process in the VM (e.g. a notebook session) running when you shut your computer/lose wifi connection/close terminal/etc, you need to use the `screen` function. 
+## Working with the screen function
+The documentation has our jupyter process running in a screen on the GCP VM. This makes it so that even if you lose connection to your VM, exit the terminal, etc, the Jupyter process will still be running and you will still be able to access it at `localhost:8080`. 
 ```bash
-# SSH into the VM if not already
-gcloud compute ssh --zone "us-central1-a" "{instance-name}" --project "{project-id}"
-
-# start screen
-screen
-
-# start process that you want to keep running regardless of connection
-# example, a jupyter notebook
-sudo docker run -e R_LIBS='/home/jupyter/packages' --rm -it -u jupyter -p 8080:8080 -v /mnt/disks/{folder-name}:/home/jupyter --entrypoint /bin/bash {terra-docker-image-path}
-
-jupyter-lab --no-browser
-
 # disconnect from the screen and you should still be able to access notebook in browser
 press CTRL + A
 press CTRL + D
@@ -38,7 +26,7 @@ screen -ls | grep Detached | cut -d. -f1 | awk '{print $1}' | xargs kill
 ```
 
 ## How the boot disk image used in this tutorial was created
-Steps to how I created the boot disk image `terra-docker-image-100-boot-20230720`
+Steps to how I created one of the boot disk images, `terra-docker-image-100-boot-20230720.`
 1. Install docker. 
    - The Terra notebook environments are [docker images](https://github.com/DataBiosphere/terra-docker). Therefore, in order to utilize these environments in our VM instances, we first have to install docker. I'm following [this](https://tomroth.com.au/gcp-docker/) tutorial which assumes a Debian Linux distribution, which is what GCP uses. 
 	   ```bash
@@ -55,7 +43,7 @@ Steps to how I created the boot disk image `terra-docker-image-100-boot-20230720
 	3. Default: us.gcr.io/broad-dsp-gcr-public/terra-jupyter-gatk:2.2.14
 
 ## Create a boot disk image with different notebook environments<a name="newboot"></a>
-1. [SSH into your VM](Introduction-to-GCP-VMs-and-using-Terra-notebook-environments.md#ssh) that was created with the tutorial book disk image `terra-docker-image-100-boot-20230720`
+1. [SSH into your VM](Introduction-to-GCP-VMs-and-using-Terra-notebook-environments.md#start-vm) that was created with one of the tutorial book disk images. e.g., `terra-docker-image-100-boot-20230720`
 1. List out currently cached docker images 
 	``` bash
 	sudo docker images
