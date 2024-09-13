@@ -43,7 +43,9 @@ cd Non-Terra-GCP/VM-helper-scripts
 ```bash
 # start screen on VM for your jupyter notebook process
 screen -S jupyter_notebook
+```
 
+```bash
 # mount persistent disk
 sudo mount -o discard,defaults /dev/disk/by-id/{persistent-disk-name} /mnt/disks/{folder-name}
 
