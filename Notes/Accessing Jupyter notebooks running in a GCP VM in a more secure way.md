@@ -27,6 +27,10 @@ You only have to do this step once.
 	cd Non-Terra-GCP/VM-helper-scripts
 	vim config.sh
 	```
+3. Set bash scripts in the VM-helper-scripts folder as executable
+	```bash
+	chmod +x *.sh
+	```
 
 ### Revised quickstart steps:<a name="revised-quickstart"></a>
 If you set up this VM using the [Introduction-to-GCP-VMs-and-using-Terra-notebook-environments](../Introduction-to-GCP-VMs-and-using-Terra-notebook-environments.md) doc in this repository, these will be your new quickstart steps:

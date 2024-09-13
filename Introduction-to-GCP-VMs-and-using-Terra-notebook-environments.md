@@ -42,6 +42,10 @@ IMO, a promising solution to the above is to strip away the Terra UI and noteboo
 		cd Non-Terra-GCP/VM-helper-scripts
 		vim config.sh
 		```
+	1. Set bash scripts as executable
+		```bash
+		chmod +x `*.sh`
+		```
 	1. Run bash script that will set up port forwarding in the background and start an interactive VM session. After running this command your terminal prompt should change to `{username}@{instance-name}:~$`<a name="start-vm"></a>
 		```bash
 		./start_vm.sh
