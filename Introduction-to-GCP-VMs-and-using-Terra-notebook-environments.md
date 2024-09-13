@@ -31,7 +31,7 @@ IMO, a promising solution to the above is to strip away the Terra UI and noteboo
 	4. Navigate back to the `Compute Engine` -> `VM instances` tab. At the top of the page, click the `Instance schedules` tab, then select `Create schedule`. 
 	5. Create a schedule that makes sense for when you typically stop working for the day.<br><br> <img src="Attachments/stopdaily.png" alt="stopdaily" width = 70%)><br>
 	6. Click on the name of the created schedule, and add your VM instance(s) to it. If one day you want to work later, remove your instance from the schedule (and add it back later!). 
-1. If you haven't already, install [Google Cloud SDK](https://cloud.google.com/sdk/) and have run `gcloud auth login` in your terminal.
+1. If you haven't already, install [Google Cloud SDK](https://cloud.google.com/sdk/) and run `gcloud auth login` in your terminal.
 2. Set up port forwarding and start an interactive VM session from your local terminal. 
 	1. Clone this repository
 		```bash
@@ -40,9 +40,9 @@ IMO, a promising solution to the above is to strip away the Terra UI and noteboo
 	1. Navigate to the `Non-Terra-GCP/VM-helper-scripts` directory. Open `config.sh` in a text editor or command-line text editor. Edit variables to match the instance name and project that is specific to you. My information is set as an example.
 		```bash
 		cd Non-Terra-GCP/VM-helper-scripts
-		vim `config.sh`
+		vim config.sh
 		```
-	1. Run bash script that will set up port forwarding in the background and start an interactive VM session. After running this command your terminal prompt should change to `> {username}@{instance-name}`<a name="start-vm"></a>
+	1. Run bash script that will set up port forwarding in the background and start an interactive VM session. After running this command your terminal prompt should change to `{username}@{instance-name}:~$`<a name="start-vm"></a>
 		```bash
 		./start_vm.sh
 		```
@@ -126,7 +126,7 @@ In this tutorial, I show how you can use the Terra notebook environments in a GC
 		sudo docker run -e R_LIBS='/home/jupyter/packages' --rm -it -u jupyter -p 8080:8080 -v /mnt/disks/scamp-singlecell:/home/jupyter --entrypoint /bin/bash us.gcr.io/broad-dsp-gcr-public/terra-jupyter-bioconductor:2.1.11
 		```
 	- To explain some of this command, we are specifying that we want to interactively run the docker container as the non-root `jupyter` user (this is how its done in Terra notebooks). We specify to place user-installed R packages into the `/home/jupyter/packages` location. We perform port mapping `8080:8080` so that we can access the services running inside the docker. We are mounting our persistent disk to the `/home/jupyer` location inside of the docker. This means when you are inside of the docker, ONLY the things saved in the `/home/jupyter` path will be saved to the persistent disk. Everything else will not be saved. (You really don't need to worry about this, the $HOME dir is /home/jupyter so by default things will be installed/saved here). When you exit the docker, navigate to `/mnt/disks/{folder-name}` to access what you put in `/home/jupyter` when you were inside of the docker. 
-	- Terra docker images not cached on the boot disk (those cached listed [here](Supplementary-information.md#How-the-boot-disk-image-used-in-this-tutorial-was-created)) **can still be used here**, but the `docker run` command will take significantly longer. This is because it is pulling the docker from scratch. If you don't plan on using any of the cached images, I would recommend creating a new boot disk image to use with your VMs that have the environments you want, instructions [here](Supplementary-information.md#newboot).
+	- Terra docker images not cached on the boot disk **can still be used here**, but the `docker run` command will take significantly longer. This is because it is pulling the docker from scratch. If you don't plan on using any of the cached images, I would recommend [creating a new boot disk image to use with your VMs that have the environments you want](Supplementary-information.md#newboot).
 1. Set up gcloud authentication. <a name="gcloudauth"></a>
    - With newer versions of gcloud, it's no longer possible to authenticate on a machine that doesn't have a web browser (like the GCP VM). The new Instructions below for authenticating a machine without a web browser is from the [google cloud SDK documentation](https://cloud.google.com/sdk/docs/authorizing#auth-login) You _should_ only have to do this once, because the credentials are stored on the persistent disk and could be used with any VM. _I think?_
 		1. Once inside Terra docker, run the following command in the GCP VM:
@@ -281,6 +281,7 @@ jupyter-lab --no-browser --port=8080
 <br>
 
 For example, copy the below code chunks and paste into the terminal.
+
 **In local terminal**
 ```bash
 # navigate to cloned repository directory

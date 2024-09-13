@@ -9,7 +9,7 @@ conda create --name scanpy_env scanpy ipykernel
 ```
 
 ## Working with the screen function
-The documentation has our jupyter process running in a screen on the GCP VM. This makes it so that even if you lose connection to your VM, exit the terminal, etc, the Jupyter process will still be running and you will still be able to access it at `localhost:8080`. 
+Our Jupyter notebook process is running in a screen on the GCP VM. This makes it so that even if you lose connection to your VM, exit the terminal, etc, the Jupyter process will still be running and you will still be able to access it at `localhost:8080`. Below are some helpful tips for working with screens if you haven't before.
 ```bash
 # disconnect from the screen and you should still be able to access notebook in browser
 press CTRL + A
@@ -67,6 +67,7 @@ Steps to how I created one of the boot disk images, `terra-docker-image-100-boot
 5. Select detatch boot disk, then select configure boot disk. 
 6. Select the custom images tab, change source project to your own, and select the disk image you just created. 
 7. Save changes
+
 Next time [you spin up this VM](Introduction-to-GCP-VMs-and-using-Terra-notebook-environments.md#quickstart), you will be able to use these different notebook environments by editing the `{terra-docker-image-path}` to one that you pulled. 
 
 

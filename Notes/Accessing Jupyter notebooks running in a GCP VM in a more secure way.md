@@ -1,12 +1,7 @@
 # Accessing Jupyter notebooks running in a GCP VM in a more secure way
 
-To do
-- Check internal and external links
-- Check supplementary sections
-- Remove images that im not using anymore. 
-
 ### TL;DR
-- Clone this repository.
+- [Clone this repository](#clone).
 - If you set up your VM using the docs in this repository, [these are your new quickstart steps](#revised-quickstart).
 - [Remove unsafe settings.](#unsafe-settings) 
 ### What's the problem?
@@ -21,7 +16,7 @@ To reduce risk, you have a few options:
 - **(Not covered here) Limit externally accessible IP ranges**: If you do use an external IP, restrict access to your VM’s ports by specifying trusted IP addresses (e.g., home network, office network). Only these IPs will be able to access the port on which your notebook is running.
 	- Create a firewall rule to do this. 
 
-### Clone repository
+### Clone repository<a name="clone"></a>
 You only have to do this step once. 
 1. Clone this repository
 	```bash
@@ -30,7 +25,7 @@ You only have to do this step once.
 2. Navigate to the `Non-Terra-GCP/VM-helper-scripts` directory. Open `config.sh` in a text editor or command-line text editor. Edit variables to match the instance name and project that is specific to you. My information is set as an example.
 	```bash
 	cd Non-Terra-GCP/VM-helper-scripts
-	vim `config.sh`
+	vim config.sh
 	```
 
 ### Revised quickstart steps:<a name="revised-quickstart"></a>
