@@ -4,6 +4,7 @@
 - [Clone this repository](#clone).
 - If you set up your VM using the docs in this repository, [these are your new quickstart steps](#revised-quickstart).
 - [Remove unsafe settings.](#unsafe-settings) 
+- [Allow your VM to send traffic out to the internet, e.g. access websites, APIs.](#allow-internet)  
 ### What's the problem?
 - The way we access our Jupyter notebooks running in the VM is by navigating to the VM's associated external IP address and the port number (e.g. `external_ip:8080`). We created a firewall rule to allow access to this port. When setting up this firewall rule, we allowed _any public IP address_ can connect to `external_ip:8080`. **Allowing any public IP to access the port increases the risk of brute-force attacks, where attackers might try to guess your credentials (Jupyter notebook password or token).**
 	- Note: Ports like 8080 and 5000 are commonly used for web applications, making it easier for someone to guess the port and potentially access the notebook.
@@ -73,7 +74,25 @@ Go to `localhost:8080` in a web browser to access your notebooks.
 	   <img src="../Attachments/delete_jupyter.png" alt="delete_jupyter" width = 70%)><br>
 
 
-
+### Allow your VM to send traffic out to the internet<a name="allow-internet"></a>
+- **Set up Cloud NAT**
+	1. At the top of the google cloud console, click the magnifying glass and search for `Cloud NAT`, click that option.<br><br>
+	   <img src="../Attachments/cloud_nat_search.png" alt="cloud_nat_search" width = 70%)><br>
+	2. Click `CREATE CLOUD NAT GATEWAY`<br><br>
+	   <img src="../Attachments/cloud_nat_page.png" alt="cloud_nat_page" width = 70%)><br>
+	3. Fill in below options, replacing `vanallen-scamp` with your project id. Click the dropdown beside `Cloud Router`, and select `CREATE NEW ROUTER`.<br><br>
+	   <img src="../Attachments/cloud_nat_intro.png" alt="cloud_nat_intro" width = 70%)><br>
+	4. Fill in `Name` as project ID, and click create. <br><br>
+	   <img src="../Attachments/cloud_router.png" alt="cloud_router" width = 70%)><br>
+	5. Final configuration should look like this, but with your project ID. Click create. <br><br>
+	   <img src="../Attachments/final_cloud_nat_config.png" alt="final_cloud_nat_config" width = 70%)><br>
+- **Create firewall rule allowing VM to send traffic out to the internet.**
+	1. Navigate to `VPC Network` -> `Firewall`
+	2. Click `CREATE FIREWALL RULE`<br><br>
+	   <img src="../Attachments/create_firewall_rule.png" alt="create_firewall_rule" width = 70%)><br>
+	3. Create firewall rule exactly like below. <br><br>
+	   <img src="../Attachments/egress_firewall_rule.png" alt="egress_firewall_rule" width = 70%)><br>
+	4. Click create
 ### When things go wrong
 - **Suddenly, you can't load your notebook**<br><br>
 	   <img src="../Attachments/connection_error.png" alt="connection_error" width = 70%)><br>

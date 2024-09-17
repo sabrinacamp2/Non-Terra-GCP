@@ -31,6 +31,25 @@ IMO, a promising solution to the above is to strip away the Terra UI and noteboo
 	4. Navigate back to the `Compute Engine` -> `VM instances` tab. At the top of the page, click the `Instance schedules` tab, then select `Create schedule`. 
 	5. Create a schedule that makes sense for when you typically stop working for the day.<br><br> <img src="Attachments/stopdaily.png" alt="stopdaily" width = 70%)><br>
 	6. Click on the name of the created schedule, and add your VM instance(s) to it. If one day you want to work later, remove your instance from the schedule (and add it back later!). 
+1. Allow your VM to send traffic out to the internet
+	- **Set up Cloud NAT**
+		1. At the top of the google cloud console, click the magnifying glass and search for `Cloud NAT`, click that option.<br><br>
+		   <img src="Attachments/cloud_nat_search.png" alt="cloud_nat_search" width = 70%)><br>
+		2. Click `CREATE CLOUD NAT GATEWAY`<br><br>
+		   <img src="Attachments/cloud_nat_page.png" alt="cloud_nat_page" width = 70%)><br>
+		3. Fill in below options, replacing `vanallen-scamp` with your project id. Click the dropdown beside `Cloud Router`, and select `CREATE NEW ROUTER`.<br><br>
+		   <img src="Attachments/cloud_nat_intro.png" alt="cloud_nat_intro" width = 70%)><br>
+		4. Fill in `Name` as project ID, and click create. <br><br>
+		   <img src="Attachments/cloud_router.png" alt="cloud_router" width = 70%)><br>
+		5. Final configuration should look like this, but with your project ID. Click create. <br><br>
+		   <img src="Attachments/final_cloud_nat_config.png" alt="final_cloud_nat_config" width = 70%)><br>
+	- **Create firewall rule allowing VM to send traffic out to the internet.**
+		1. Navigate to `VPC Network` -> `Firewall`
+		2. Click `CREATE FIREWALL RULE`<br><br>
+		   <img src="Attachments/create_firewall_rule.png" alt="create_firewall_rule" width = 70%)><br>
+		3. Create firewall rule exactly like below. <br><br>
+		   <img src="Attachments/egress_firewall_rule.png" alt="egress_firewall_rule" width = 70%)><br>
+		4. Click create
 1. If you haven't already, install [Google Cloud SDK](https://cloud.google.com/sdk/) and run `gcloud auth login` in your terminal.
 2. Set up port forwarding and start an interactive VM session from your local terminal. 
 	1. Clone this repository
