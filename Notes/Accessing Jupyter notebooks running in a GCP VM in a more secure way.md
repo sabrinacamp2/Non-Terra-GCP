@@ -5,6 +5,7 @@ You only have to follow these steps once.
 - [Clone this repository](#clone).
 - [Remove unsafe settings.](#unsafe-settings) 
 - [Allow your VM to send traffic out to the internet, e.g. access websites, APIs.](#allow-internet)  
+
 New quickstart steps, use this every time you access your VM.
 - If you set up your VM using the docs in this repository, [these are your new quickstart steps](#revised-quickstart).
 ### What's the problem?
