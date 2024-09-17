@@ -1,10 +1,12 @@
 # Accessing Jupyter notebooks running in a GCP VM in a more secure way
 
 ### TL;DR
+You only have to follow these steps once. 
 - [Clone this repository](#clone).
-- If you set up your VM using the docs in this repository, [these are your new quickstart steps](#revised-quickstart).
 - [Remove unsafe settings.](#unsafe-settings) 
 - [Allow your VM to send traffic out to the internet, e.g. access websites, APIs.](#allow-internet)  
+New quickstart steps, use this every time you access your VM.
+- If you set up your VM using the docs in this repository, [these are your new quickstart steps](#revised-quickstart).
 ### What's the problem?
 - The way we access our Jupyter notebooks running in the VM is by navigating to the VM's associated external IP address and the port number (e.g. `external_ip:8080`). We created a firewall rule to allow access to this port. When setting up this firewall rule, we allowed _any public IP address_ can connect to `external_ip:8080`. **Allowing any public IP to access the port increases the risk of brute-force attacks, where attackers might try to guess your credentials (Jupyter notebook password or token).**
 	- Note: Ports like 8080 and 5000 are commonly used for web applications, making it easier for someone to guess the port and potentially access the notebook.
@@ -32,35 +34,6 @@ You only have to do this step once.
 	```bash
 	chmod +x *.sh
 	```
-
-### Revised quickstart steps:<a name="revised-quickstart"></a>
-If you set up this VM using the [Introduction-to-GCP-VMs-and-using-Terra-notebook-environments](../Introduction-to-GCP-VMs-and-using-Terra-notebook-environments.md) doc in this repository, these will be your new quickstart steps:
-
-**In local terminal**
-```bash
-# navigate to cloned repository directory, will be dependent on where you cloned it to
-cd Non-Terra-GCP/VM-helper-scripts
-
-# start port forwarding and interactive VM session
-./start_vm.sh
-```
-**Once in GCP VM**
-```bash
-# start screen on VM for your jupyter notebook process
-screen -S jupyter_notebook
-```
-
-```bash
-# mount persistent disk
-sudo mount -o discard,defaults /dev/disk/by-id/{persistent-disk-name} /mnt/disks/{folder-name}
-
-# start up terra notebook environment and jupyter notebook
-sudo docker run -e R_LIBS='/home/jupyter/packages' --rm -it -u jupyter -p 8080:8080 -v /mnt/disks/{folder-name}:/home/jupyter --entrypoint /bin/bash {terra-docker-image-path}
-
-jupyter-lab --no-browser --port=8080
-```
-
-Go to `localhost:8080` in a web browser to access your notebooks. 
 
 ### Remove not safe settings<a name="unsafe-settings"></a>
 
@@ -93,6 +66,35 @@ Go to `localhost:8080` in a web browser to access your notebooks.
 	3. Create firewall rule exactly like below. <br><br>
 	   <img src="../Attachments/egress_firewall_rule.png" alt="egress_firewall_rule" width = 70%)><br>
 	4. Click create
+### Revised quickstart steps:<a name="revised-quickstart"></a>
+If you set up this VM using the [Introduction-to-GCP-VMs-and-using-Terra-notebook-environments](../Introduction-to-GCP-VMs-and-using-Terra-notebook-environments.md) doc in this repository, these will be your new quickstart steps:
+
+**In local terminal**
+```bash
+# navigate to cloned repository directory, will be dependent on where you cloned it to
+cd Non-Terra-GCP/VM-helper-scripts
+
+# start port forwarding and interactive VM session
+./start_vm.sh
+```
+**Once in GCP VM**
+```bash
+# start screen on VM for your jupyter notebook process
+screen -S jupyter_notebook
+```
+
+```bash
+# mount persistent disk
+sudo mount -o discard,defaults /dev/disk/by-id/{persistent-disk-name} /mnt/disks/{folder-name}
+
+# start up terra notebook environment and jupyter notebook
+sudo docker run -e R_LIBS='/home/jupyter/packages' --rm -it -u jupyter -p 8080:8080 -v /mnt/disks/{folder-name}:/home/jupyter --entrypoint /bin/bash {terra-docker-image-path}
+
+jupyter-lab --no-browser --port=8080
+```
+
+Go to `localhost:8080` in a web browser to access your notebooks. 
+
 ### When things go wrong
 - **Suddenly, you can't load your notebook**<br><br>
 	   <img src="../Attachments/connection_error.png" alt="connection_error" width = 70%)><br>
