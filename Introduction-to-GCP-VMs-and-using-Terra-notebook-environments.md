@@ -252,7 +252,7 @@ In this tutorial, I show how you can use the Terra notebook environments in a GC
 		   jupyter notebook --no-browser
 			```
 	1. Navigate to the jupyter notebook in your browser of choice. 
-	   - The address you are going to navigate to will be the following, `localhost:8080`
+	   - The address you are going to navigate to will be the following, `localhost:8080/notebooks`
 
 
 # Quick start

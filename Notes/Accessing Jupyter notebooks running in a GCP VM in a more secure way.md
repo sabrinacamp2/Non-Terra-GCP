@@ -91,10 +91,15 @@ sudo mount -o discard,defaults /dev/disk/by-id/{persistent-disk-name} /mnt/disks
 # start up terra notebook environment and jupyter notebook
 sudo docker run -e R_LIBS='/home/jupyter/packages' --rm -it -u jupyter -p 8080:8080 -v /mnt/disks/{folder-name}:/home/jupyter --entrypoint /bin/bash {terra-docker-image-path}
 
+# if using jupyter lab
 jupyter-lab --no-browser --port=8080
+
+# if using jupyter notebook
+jupyter-notebook --no-browser --port=8080
 ```
 
-Go to `localhost:8080` in a web browser to access your notebooks. 
+- If using jupyter lab, go to `localhost:8080` in a web browser to access your notebooks. 
+- If using jupyter notebooks, go to `localhost:8080/notebooks` in a web browser to access your notebooks. 
 
 ### When things go wrong
 - **Suddenly, you can't load your notebook**<br><br>
