@@ -150,9 +150,14 @@ In this tutorial, I show how you can use the Terra notebook environments in a GC
 		```
 	- To explain some of this command, we are specifying that we want to interactively run the docker container as the non-root `jupyter` user (this is how its done in Terra notebooks). We specify to place user-installed R packages into the `/home/jupyter/packages` location. We perform port mapping `8080:8080` so that we can access the services running inside the docker. We are mounting our persistent disk to the `/home/jupyer` location inside of the docker. This means when you are inside of the docker, ONLY the things saved in the `/home/jupyter` path will be saved to the persistent disk. Everything else will not be saved. (You really don't need to worry about this, the $HOME dir is /home/jupyter so by default things will be installed/saved here). When you exit the docker, navigate to `/mnt/disks/{folder-name}` to access what you put in `/home/jupyter` when you were inside of the docker. 
 	- Terra docker images not cached on the boot disk **can still be used here**, but the `docker run` command will take significantly longer. This is because it is pulling the docker from scratch. If you don't plan on using any of the cached images, I would recommend [creating a new boot disk image to use with your VMs that have the environments you want](Supplementary-information.md#newboot).
+1. Once inside the docker, create this folder for where R packages to be installed. Even if you don't anticipate installing R packages, I would do this step to future proof yourself.
+	```bash
+	# Copy and paste this exact command
+	mkdir /home/jupyter/packages
+	```
 1. Set up gcloud authentication. <a name="gcloudauth"></a>
    - With newer versions of gcloud, it's no longer possible to authenticate on a machine that doesn't have a web browser (like the GCP VM). The new Instructions below for authenticating a machine without a web browser is from the [google cloud SDK documentation](https://cloud.google.com/sdk/docs/authorizing#auth-login) You _should_ only have to do this once, because the credentials are stored on the persistent disk and could be used with any VM. _I think?_
-		1. Once inside Terra docker, run the following command in the GCP VM:
+		1. Inside Terra docker, run the following command in the GCP VM:
 		   ```bash
 		   gcloud auth login --no-browser
 			```
