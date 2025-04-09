@@ -259,6 +259,8 @@ In this tutorial, I show how you can use the Terra notebook environments in a GC
 	1. Navigate to the jupyter notebook in your browser of choice. 
 	   - The address you are going to navigate to will be the following, `localhost:8080/notebooks`
 
+## Delete your VMs and disk from Terra
+After you are successfully running your notebook on a VM within your personal GCP project, please delete the corresponding VM and persistance disks from Terra. You can do this from [here](https://app.terra.bio/#clusters). 
 
 # Quick start
 ## I stopped my VM and restarted it. What all do I have to do to get jupyter up and running again? <a name="quickstart"></a>
